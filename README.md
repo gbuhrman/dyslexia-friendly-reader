@@ -18,7 +18,7 @@ Usage:
 3. Use the controls to adjust the reading experience
 
 Live Demo (GitHub Pages):
-https://github.com/gbuhrman/dyslexia-friendly-reader/
+https://github.com/gbuhrman/dyslexia-friendly-reader/HFP-Dyslexia-Friendly-Reader.html
 
 Files:
 - HFP-Dyslexia-Friendly-Reader.html
