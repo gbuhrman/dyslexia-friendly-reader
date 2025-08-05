@@ -28,7 +28,7 @@ This tool supports font, color, and spacing adjustments, bookmark-based navigati
 
 | File | Description |
 |------|-------------|
-| **index.html** | **Full Reader** – Click-to-Read, Text-to-Speech Read Aloud with highlighting, bookmarks, and chapter detection. Recommended for most users. |
+| **index.html** | **Full Reader** â€“ Click-to-Read, Text-to-Speech Read Aloud with highlighting, bookmarks, and chapter detection. Recommended for most users. |
 | **click_to_read_only.html** | Simplified version with Click-to-Read definitions but **no full text-to-speech** (lightweight classroom or library use). |
 | **basic_reader.html** | Minimal starting version with font/color/spacing customization only. No Click-to-Read or Read Aloud. |
 
@@ -38,4 +38,5 @@ This tool supports font, color, and spacing adjustments, bookmark-based navigati
 
 1. **Download one of the HTML files** or clone this repository:
    ```bash
-   git clone https://github.com/<your-username>/<your-repo>.git
+
+   git clone https://github.com/gbuhrman/dyslexia-friendly-reader.git
