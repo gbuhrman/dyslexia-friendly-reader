@@ -1,31 +1,41 @@
-# dyslexia-friendly-reader
-HTML based reader. Can read any text file and allows the user to customize font, font size, line spacing, text and background color
-HFP Dyslexia-Friendly Reader
-----------------------------
+# Dyslexia-Friendly Reader
 
-A browser-based reading tool designed for dyslexic readers.
-This is a single HTML file with no installation required.
+A simple, customizable web-based reader designed to improve reading accessibility for dyslexic and struggling readers.  
+This tool supports font, color, and spacing adjustments, bookmark-based navigation, and optional text-to-speech with word highlighting.  
 
-Features:
-- Change font (including OpenDyslexic)
-- Adjust font size and line spacing
-- Choose text color and background color
-- Upload your own .txt files
+**Powered by Howard Forge Press**
 
-Usage:
-1. Open HFP-Dyslexia-Friendly-Reader.html in any modern browser
-2. Click the "Upload" button to load any plain text file
-3. Use the controls to adjust the reading experience
+---
 
-Live Demo (GitHub Pages):
-https://gbuhrman.github.io/dyslexia-friendly-reader/HFP-Dyslexia-Friendly-Reader.html
+## Features
 
-Files:
-- HFP-Dyslexia-Friendly-Reader.html
+- **Customizable Reading Experience**
+  - Adjustable font, font size, line spacing, text color, and background color
+- **Click-to-Read Mode**
+  - Click on any word to hear it spoken and see its definition (via free dictionary API)
+- **Text-to-Speech Read Aloud (Full Version)**
+  - Starts from user-defined bookmarks, with live word highlighting
+- **Bookmark Support**
+  - Save your reading position and return to it later
+- **Chapter Detection**
+  - Quickly jump to chapters with smooth scrolling and temporary highlight
+- **User Preference Persistence**
+  - Your reading settings are saved automatically in your browser
 
-License:
-This work is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License.
-You may use, share, and adapt the software for non-commercial purposes, provided you give proper credit.
-Full license: https://creativecommons.org/licenses/by-nc/4.0/
+---
 
-Powered by Howard Forge Press
+## Versions Included
+
+| File | Description |
+|------|-------------|
+| **index.html** | **Full Reader** – Click-to-Read, Text-to-Speech Read Aloud with highlighting, bookmarks, and chapter detection. Recommended for most users. |
+| **click_to_read_only.html** | Simplified version with Click-to-Read definitions but **no full text-to-speech** (lightweight classroom or library use). |
+| **basic_reader.html** | Minimal starting version with font/color/spacing customization only. No Click-to-Read or Read Aloud. |
+
+---
+
+## Getting Started
+
+1. **Download one of the HTML files** or clone this repository:
+   ```bash
+   git clone https://github.com/<your-username>/<your-repo>.git

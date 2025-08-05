@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dyslexia-Friendly Reader (Bookmark Fix + Holistic Speech)</title>
+<title>Dyslexia-Friendly Reader (Click-to-Read Words)</title>
 <style>
   body { font-family: 'OpenDyslexic', Arial, sans-serif; background: #f8f8f8; color: #000; padding: 20px; margin: 0; line-height: 1.6; }
   #controls { position: fixed; top: 0; left: 0; width: 100%; background: #fff; padding: 10px; border-bottom: 1px solid #ccc; z-index: 1000; display: flex; flex-wrap: wrap; gap: 10px; }
-  #content { margin-top: 300px; max-width: 800px; margin-left: auto; margin-right: auto; position: relative; }
+  #content { margin-top: 230px; max-width: 800px; margin-left: auto; margin-right: auto; position: relative; }
   #story { white-space: pre-wrap; text-align: left; cursor: pointer; }
   #definitionPopup { position: absolute; background: #fff; border: 1px solid #ccc; padding: 5px 10px; font-size: 0.9em; border-radius: 5px; display: none; z-index: 2000; max-width: 300px; }
-  .highlight-chapter { background: yellow; transition: background 2s ease; }
-  .reading-highlight { background: #ffff99; border-radius: 3px; }
   footer { position: fixed; bottom: 0; width: 100%; background: #eee; padding: 5px; font-size: 0.8em; text-align: center; }
 </style>
 </head>
@@ -25,16 +23,13 @@
   <label>Upload: <input type="file" id="fileInput" accept=".txt"></label>
   <label><input type="checkbox" id="autoformatToggle" checked> Autoformat readability</label>
   <label><input type="checkbox" id="clickReadToggle"> Click-to-Read Mode</label>
-  <label>Reading Speed: <input type="range" id="speedControl" min="0.5" max="2" step="0.1" value="1"></label>
-  <button id="readAloudBtn">Read Aloud from Bookmark</button>
-  <button id="stopReadAloudBtn">Stop</button>
   <label>Chapter: <select id="chapterSelect"><option value="">--Select--</option></select></label>
   <button id="bookmarkBtn">Bookmark</button>
   <button id="gotoBookmarkBtn">Go to Bookmark</button>
 </div>
 <div id="content">
   <h1>Dyslexia-Friendly Reader</h1>
-  <h2>Upload Your Own Text to use Read Aloud Features</h2>
+  <h2>Upload Your Own Text</h2>
   <div id="story">Howard Castle dominated the landscape. The high central dome pierced the clouds. The halls were lined with large windows designed to let in excess sunlight, illuminating the numerous paintings and tapestries that lined the walls. The grounds surrounding the Castle were perfectly manicured. The long, well-groomed lawns ensured visitors would have a long, uninterrupted view of the Castle as they made their way to the entrance, and that was the point. The Right Honorable Charles Howard, 3rd Earl of Carlisle, who had died 8 years ago in May, built to impress. The Castle was more than a home; it was a masterpiece of architectural ambition that was the outward manifestation of his political ambition. In his prime, Lord Charles Howard rose to the highest of political offices, acting for a time as the Lord Justice of the Realm, holding England together for a short time between the reigns of Queen Anne and King George I. In his time, Howard Castle played host to monarchs, generals, and the other Lords of the land. Many came to Howard Castle seeking political favors and alliances, and the long walk to Howard Castle ensured they arrived dutifully impressed with the power and privilege that resided there.
 Designed by Sir John Vanbrugh, its baroque splendor was unmatched. The estate contained vast gardens with classical statues, cascading fountains, and hedges stretching toward the River Derwent. It was a world of refinement and excess, where every corner whispered of the family's legacy, a legacy that William Howard, the grandson of Lord Charles, would one day squander.
 Within these walls, young William Howard lived a life most boys could only dream of, a life defined by luxury, indulgence, and the reckless abandon that often accompanies youthful entitlement.
@@ -506,128 +501,28 @@ William nodded. Slowly. He took the letter, turned, and left without another wor
 Lucia was waiting where he had left her. When she saw the paper in his hand, she stood.
 “Well?”
 “My commission starts within the month. I'm going to South Carolina,” he said. 
+
 </div>
   <div id="definitionPopup"></div>
 </div>
 <footer>Powered by Howard Forge Press</footer>
 <script>
-let clickReadMode = false;
-let utterance = null;
+const content = document.getElementById('content');
+const story = document.getElementById('story');
+const body = document.body;
+const definitionPopup = document.getElementById('definitionPopup');
 let currentFileName = "";
-let readingSpeed = 1;
-let bookmarkWordIndex = null;
-let wordElements = [];
-let textFromBookmark = "";
-let textStartOffset = 0;
+let chapterAnchors = [];
+let clickReadMode = false;
 
-// Speed control
-document.getElementById('speedControl').addEventListener('input', e => { readingSpeed = parseFloat(e.target.value); });
-document.getElementById('clickReadToggle').addEventListener('change', e => { clickReadMode = e.target.checked; });
-
-// Bookmark save: top visible word detection
-document.getElementById('bookmarkBtn').addEventListener('click', () => {
-  const visibleWords = Array.from(document.querySelectorAll('.word')).filter(word => {
-    const rect = word.getBoundingClientRect();
-    return rect.top >= 0 && rect.bottom <= window.innerHeight;
-  });
-  if (visibleWords.length > 0) {
-    bookmarkWordIndex = parseInt(visibleWords[0].dataset.index) || 0;
-    if (currentFileName) {
-      localStorage.setItem(`bookmarkWord_${currentFileName}`, bookmarkWordIndex);
-      alert('Bookmark saved at current position.');
-    }
-  } else {
-    alert('No visible word detected for bookmark.');
-  }
-});
-
-document.getElementById('gotoBookmarkBtn').addEventListener('click', () => {
-  if (currentFileName) {
-    const savedIndex = parseInt(localStorage.getItem(`bookmarkWord_${currentFileName}`) || '-1');
-    if (savedIndex >= 0) {
-      const targetWord = document.querySelector(`.word[data-index="${savedIndex}"]`);
-      if (targetWord) targetWord.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      alert('No bookmark set for this file.');
-    }
-  }
-});
-
-// Read aloud holistic with highlighting
-document.getElementById('readAloudBtn').addEventListener('click', () => {
-  const savedWordIndex = parseInt(localStorage.getItem(`bookmarkWord_${currentFileName}`) || '-1');
-  if (savedWordIndex < 0) { alert('No bookmark found. Please set a bookmark first.'); return; }
-  wordElements = Array.from(document.querySelectorAll('.word'));
-  const words = wordElements.map(w => w.dataset.word);
-  textFromBookmark = words.slice(savedWordIndex).join(' ');
-  textStartOffset = words.slice(0, savedWordIndex).join(' ').length + 1;
-
-  if (utterance) speechSynthesis.cancel();
-  utterance = new SpeechSynthesisUtterance(textFromBookmark);
-  utterance.rate = readingSpeed;
-
-  utterance.onboundary = (event) => {
-    if (event.name === 'word') {
-      const charIndex = event.charIndex + textStartOffset;
-      const index = getWordIndexAtChar(charIndex, words);
-      highlightWord(index);
-    }
-  };
-  utterance.onend = () => { clearHighlights(); };
-  speechSynthesis.speak(utterance);
-});
-
-document.getElementById('stopReadAloudBtn').addEventListener('click', () => { speechSynthesis.cancel(); clearHighlights(); });
-
-function getWordIndexAtChar(charIndex, words) {
-  let count = 0;
-  for (let i = 0; i < words.length; i++) {
-    count += words[i].length + 1;
-    if (count > charIndex) return i;
-  }
-  return 0;
+// Clean text and chunk sentences
+function cleanText(text) {
+  text = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  text = text.replace(/(\w)-\s*\n(\w)/g, "$1$2");
+  text = text.replace(/([^\n])\n(?!\n)/g, "$1 ");
+  return text;
 }
-function highlightWord(index) { clearHighlights(); if (wordElements[index]) wordElements[index].classList.add('reading-highlight'); }
-function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
 
-// Chapter jump
-document.getElementById('chapterSelect').addEventListener('change', e => {
-  const id = e.target.value;
-  if (id) {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      el.classList.add('highlight-chapter');
-      setTimeout(() => el.classList.remove('highlight-chapter'), 2000);
-    }
-  }
-});
-
-// Click-to-read definitions
-document.getElementById('story').addEventListener('click', async (e) => {
-  if (e.target.classList.contains('word') && clickReadMode) {
-    const word = e.target.dataset.word;
-    const utter = new SpeechSynthesisUtterance(word);
-    speechSynthesis.cancel(); speechSynthesis.speak(utter);
-    try {
-      const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-      if (res.ok) {
-        const data = await res.json();
-        const definition = data[0]?.meanings[0]?.definitions[0]?.definition || "Definition not found.";
-        const popup = document.getElementById('definitionPopup');
-        popup.innerText = `${word}: ${definition}`;
-        const rect = e.target.getBoundingClientRect();
-        popup.style.left = `${rect.left + window.scrollX}px`;
-        popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
-        popup.style.display = 'block';
-        setTimeout(() => { popup.style.display = 'none'; }, 5000);
-      }
-    } catch { alert('Definition lookup failed.'); }
-  }
-});
-
-// File upload and chapter detection
-function cleanText(text) { text = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n"); text = text.replace(/(\w)-\s*\n(\w)/g, "$1$2"); text = text.replace(/([^\n])\n(?!\n)/g, "$1 "); return text; }
 function autoFormatText(text) {
   text = cleanText(text);
   const paragraphs = text.split(/\n\s*\n/);
@@ -635,35 +530,115 @@ function autoFormatText(text) {
   const sentenceRegex = /[^.!?]+[.!?]+(?:["”])?/g;
   paragraphs.forEach(p => {
     const sentences = p.match(sentenceRegex);
-    if (!sentences) formatted.push(p.trim());
-    else for (let i = 0; i < sentences.length; i += 4) formatted.push(sentences.slice(i, i + 4).join(' ').trim());
+    if (!sentences) {
+      formatted.push(p.trim());
+    } else {
+      for (let i = 0; i < sentences.length; i += 4) {
+        formatted.push(sentences.slice(i, i + 4).join(' ').trim());
+      }
+    }
   });
   return formatted.join("\n\n");
 }
+
+// Add click-to-read spans around words
+function wrapWordsWithSpans(text) {
+  return text.replace(/(\b[\w'’-]+\b)/g, '<span class="word" data-word="$1">$1</span>');
+}
+
 function detectChaptersAndAddAnchors(text) {
   const chapterRegex = /(###\s*CHAPTER\s+[\wIVXLCDM]+|^(CHAPTER|Chapter)\s+[\wIVXLCDM]+|^\s*[\dIVXLCDM]+\s*$)/gm;
-  let chapters = [], anchorIndex = 0;
+  let chapters = [];
+  let anchorIndex = 0;
   let modifiedText = text.replace(chapterRegex, match => {
     const anchorId = `chapter_${anchorIndex}`;
     chapters.push({ title: match.trim(), id: anchorId });
     anchorIndex++;
-    return `\n<a id="${anchorId}" class="chapter-anchor"></a><span class="chapter-title">${match}</span>`;
+    return `\n<a id="${anchorId}"></a>${match}`;
   });
   return { text: modifiedText, chapters: chapters };
 }
-function wrapWordsWithSpans(text) {
-  let index = 0;
-  return text.replace(/(>[^<]+)/g, (segment) => {
-    if (segment.startsWith('>')) {
-      return segment.replace(/(\b[\w'’-]+\b)/g, (word) => {
-        const span = `<span class="word" data-word="${word}" data-index="${index}">${word}</span>`;
-        index++;
-        return span;
-      });
-    }
-    return segment;
+
+function buildChapterMenu(chapters) {
+  const chapterSelect = document.getElementById('chapterSelect');
+  chapterSelect.innerHTML = '<option value="">--Select--</option>';
+  chapterAnchors = chapters;
+  chapters.forEach(ch => {
+    const opt = document.createElement('option');
+    opt.value = ch.id;
+    opt.textContent = ch.title;
+    chapterSelect.appendChild(opt);
   });
 }
+
+document.getElementById('chapterSelect').addEventListener('change', e => {
+  const id = e.target.value;
+  if (id) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+});
+
+document.getElementById('bookmarkBtn').addEventListener('click', () => {
+  const bookmark = window.scrollY;
+  if (currentFileName) {
+    localStorage.setItem(`bookmark_${currentFileName}`, bookmark);
+    alert('Bookmark saved!');
+  } else {
+    alert('No file loaded to bookmark.');
+  }
+});
+
+document.getElementById('gotoBookmarkBtn').addEventListener('click', () => {
+  if (currentFileName) {
+    const bookmark = localStorage.getItem(`bookmark_${currentFileName}`);
+    if (bookmark) {
+      window.scrollTo({ top: parseInt(bookmark, 10), behavior: 'smooth' });
+    } else {
+      alert('No bookmark set for this file.');
+    }
+  } else {
+    alert('No file loaded.');
+  }
+});
+
+// Toggle click-to-read
+const clickReadToggle = document.getElementById('clickReadToggle');
+clickReadToggle.addEventListener('change', e => {
+  clickReadMode = e.target.checked;
+});
+
+// Word click listener
+story.addEventListener('click', async (e) => {
+  if (!clickReadMode) return;
+  if (e.target.classList.contains('word')) {
+    const word = e.target.dataset.word;
+    const utterance = new SpeechSynthesisUtterance(word);
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
+
+    // Fetch definition from Free Dictionary API
+    try {
+      const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+      if (res.ok) {
+        const data = await res.json();
+        const definition = data[0]?.meanings[0]?.definitions[0]?.definition || "Definition not found.";
+        definitionPopup.innerText = `${word}: ${definition}`;
+        const rect = e.target.getBoundingClientRect();
+        definitionPopup.style.left = `${rect.left + window.scrollX}px`;
+        definitionPopup.style.top = `${rect.bottom + window.scrollY + 5}px`;
+        definitionPopup.style.display = 'block';
+        setTimeout(() => { definitionPopup.style.display = 'none'; }, 5000);
+      }
+    } catch {
+      definitionPopup.innerText = `${word}: Definition lookup failed.`;
+      definitionPopup.style.display = 'block';
+      setTimeout(() => { definitionPopup.style.display = 'none'; }, 5000);
+    }
+  }
+});
 
 document.getElementById('fileInput').addEventListener('change', e => {
   const file = e.target.files[0];
@@ -672,32 +647,36 @@ document.getElementById('fileInput').addEventListener('change', e => {
     const reader = new FileReader();
     reader.onload = evt => {
       let text = evt.target.result;
-      if (document.getElementById('autoformatToggle').checked) text = autoFormatText(text);
-      const { text: textWithAnchors, chapters } = detectChaptersAndAddAnchors(text);
-      const wrapped = wrapWordsWithSpans(textWithAnchors);
-      document.getElementById('story').innerHTML = wrapped;
-      const chapterSelect = document.getElementById('chapterSelect');
-      chapterSelect.innerHTML = '<option value="">--Select--</option>';
-      chapters.forEach(ch => { const opt = document.createElement('option'); opt.value = ch.id; opt.textContent = ch.title; chapterSelect.appendChild(opt); });
+      if (document.getElementById('autoformatToggle').checked) {
+        text = autoFormatText(text);
+      }
+      // Wrap words for click-read
+      const wrapped = wrapWordsWithSpans(text);
+      const { text: textWithAnchors, chapters } = detectChaptersAndAddAnchors(wrapped);
+      story.innerHTML = textWithAnchors;
+      buildChapterMenu(chapters);
     };
     reader.readAsText(file);
   }
 });
 
-// User preference persistence
-const content = document.getElementById('content');
 document.getElementById('fontSelect').addEventListener('change', e => { content.style.fontFamily = e.target.value; localStorage.setItem('font', e.target.value); });
 document.getElementById('fontSize').addEventListener('input', e => { content.style.fontSize = e.target.value + 'px'; localStorage.setItem('fontSize', e.target.value); });
 document.getElementById('lineSpacing').addEventListener('input', e => { content.style.lineHeight = e.target.value; localStorage.setItem('lineHeight', e.target.value); });
 document.getElementById('textColor').addEventListener('input', e => { content.style.color = e.target.value; localStorage.setItem('textColor', e.target.value); });
-document.getElementById('bgColor').addEventListener('input', e => { document.body.style.backgroundColor = e.target.value; localStorage.setItem('bgColor', e.target.value); });
+document.getElementById('bgColor').addEventListener('input', e => { body.style.backgroundColor = e.target.value; localStorage.setItem('bgColor', e.target.value); });
 
 window.addEventListener('load', () => {
-  if (localStorage.getItem('font')) { content.style.fontFamily = localStorage.getItem('font'); document.getElementById('fontSelect').value = localStorage.getItem('font'); }
-  if (localStorage.getItem('fontSize')) { content.style.fontSize = localStorage.getItem('fontSize') + 'px'; document.getElementById('fontSize').value = localStorage.getItem('fontSize'); }
-  if (localStorage.getItem('lineHeight')) { content.style.lineHeight = localStorage.getItem('lineHeight'); document.getElementById('lineSpacing').value = localStorage.getItem('lineHeight'); }
-  if (localStorage.getItem('textColor')) { content.style.color = localStorage.getItem('textColor'); document.getElementById('textColor').value = localStorage.getItem('textColor'); }
-  if (localStorage.getItem('bgColor')) { document.body.style.backgroundColor = localStorage.getItem('bgColor'); document.getElementById('bgColor').value = localStorage.getItem('bgColor'); }
+  const savedFont = localStorage.getItem('font');
+  const savedFontSize = localStorage.getItem('fontSize');
+  const savedLineHeight = localStorage.getItem('lineHeight');
+  const savedTextColor = localStorage.getItem('textColor');
+  const savedBgColor = localStorage.getItem('bgColor');
+  if (savedFont) { content.style.fontFamily = savedFont; document.getElementById('fontSelect').value = savedFont; }
+  if (savedFontSize) { content.style.fontSize = savedFontSize + 'px'; document.getElementById('fontSize').value = savedFontSize; }
+  if (savedLineHeight) { content.style.lineHeight = savedLineHeight; document.getElementById('lineSpacing').value = savedLineHeight; }
+  if (savedTextColor) { content.style.color = savedTextColor; document.getElementById('textColor').value = savedTextColor; }
+  if (savedBgColor) { body.style.backgroundColor = savedBgColor; document.getElementById('bgColor').value = savedBgColor; }
 });
 </script>
 </body>
