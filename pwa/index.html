@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src https://api.dictionaryapi.dev;">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dyslexia-Friendly Reader (Bookmark Fix + Holistic Speech)</title>
@@ -20,6 +21,19 @@
     navigator.serviceWorker.register('service-worker.js');
   }
 </script>
+
+<script>
+  const isIOS = /iP(hone|od|ad)/.test(navigator.platform) || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+  window.addEventListener('DOMContentLoaded', () => {
+    if (isIOS) {
+      const readBtn = document.getElementById('readAloudBtn');
+      const stopBtn = document.getElementById('stopReadAloudBtn');
+      if (readBtn) readBtn.style.display = 'none';
+      if (stopBtn) stopBtn.style.display = 'none';
+    }
+  });
+</script>
+
 </head>
 <body>
 <div id="controls">
