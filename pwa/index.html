@@ -23,7 +23,8 @@
 </script>
 
 <script>
-  const isIOS = /iP(hone|od|ad)/.test(navigator.platform) || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+  const isIOS = /iP(hone|od|ad)/.test(navigator.platform) || 
+                (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
   window.addEventListener('DOMContentLoaded', () => {
     if (isIOS) {
       const readBtn = document.getElementById('readAloudBtn');
@@ -529,7 +530,7 @@ Lucia was waiting where he had left her. When she saw the paper in his hand, she
 </div>
   <div id="definitionPopup"></div>
 </div>
-<footer>Powered by Howard Forge Press</footer>
+<footer>Powered by Howard Forge Press | <a href="privacy.html">Privacy Policy</a></footer>
 <script>
 let clickReadMode = false;
 let utterance = null;
