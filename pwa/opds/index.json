@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "title": "DF Reader Library",
+    "modified": "2025-08-10T00:00:00Z"
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "./index.json",
+      "type": "application/opds+json"
+    },
+    {
+      "rel": "http://opds-spec.org/catalog",
+      "href": "./all.json",
+      "type": "application/opds+json",
+      "title": "All Books"
+    },
+    {
+      "rel": "http://opds-spec.org/catalog",
+      "href": "./genres/adventure.json",
+      "type": "application/opds+json",
+      "title": "Adventure"
+    },
+    {
+      "rel": "http://opds-spec.org/catalog",
+      "href": "./genres/dialogue.json",
+      "type": "application/opds+json",
+      "title": "Dialogue-Heavy"
+    }
+  ]
+}

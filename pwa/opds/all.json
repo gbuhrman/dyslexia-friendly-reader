@@ -1,0 +1,85 @@
+{
+  "metadata": {
+    "title": "All Books",
+    "modified": "2025-08-10T00:00:00Z",
+    "numberOfItems": 2
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "./all.json",
+      "type": "application/opds+json"
+    },
+    {
+      "rel": "start",
+      "href": "./index.json",
+      "type": "application/opds+json"
+    }
+  ],
+  "publications": [
+    {
+      "metadata": {
+        "identifier": "PG0001",
+        "title": "Sample Adventure",
+        "language": "en",
+        "modified": "2025-08-10T00:00:00Z",
+        "published": "1901-01-01T00:00:00Z",
+        "subjects": [
+          {
+            "name": "Adventure"
+          }
+        ],
+        "belongsTo": {
+          "series": []
+        },
+        "contributor": [
+          {
+            "name": "Anon",
+            "role": "author"
+          }
+        ],
+        "readingOrder": []
+      },
+      "links": [
+        {
+          "href": "../books/PG0001.txt",
+          "type": "text/plain; charset=utf-8",
+          "rel": "http://opds-spec.org/acquisition/open-access"
+        }
+      ],
+      "images": [],
+      "imagesFallback": []
+    },
+    {
+      "metadata": {
+        "identifier": "PG0002",
+        "title": "Dialogues and Days",
+        "language": "en",
+        "modified": "2025-08-10T00:00:00Z",
+        "published": "1890-01-01T00:00:00Z",
+        "subjects": [
+          {
+            "name": "Fiction"
+          },
+          {
+            "name": "Dialogue-Heavy"
+          }
+        ],
+        "contributor": [
+          {
+            "name": "Anon",
+            "role": "author"
+          }
+        ],
+        "readingOrder": []
+      },
+      "links": [
+        {
+          "href": "../books/PG0002.txt",
+          "type": "text/plain; charset=utf-8",
+          "rel": "http://opds-spec.org/acquisition/open-access"
+        }
+      ]
+    }
+  ]
+}

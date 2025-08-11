@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "title": "Dialogue",
+    "modified": "2025-08-10T00:00:00Z",
+    "numberOfItems": 1
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "./dialogue.json",
+      "type": "application/opds+json"
+    },
+    {
+      "rel": "start",
+      "href": "../index.json",
+      "type": "application/opds+json"
+    }
+  ],
+  "publications": [
+    {
+      "metadata": {
+        "identifier": "PG0002",
+        "title": "Dialogues and Days",
+        "language": "en",
+        "modified": "2025-08-10T00:00:00Z",
+        "published": "1890-01-01T00:00:00Z",
+        "subjects": [
+          {
+            "name": "Fiction"
+          },
+          {
+            "name": "Dialogue-Heavy"
+          }
+        ],
+        "contributor": [
+          {
+            "name": "Anon",
+            "role": "author"
+          }
+        ],
+        "readingOrder": []
+      },
+      "links": [
+        {
+          "href": "../books/PG0002.txt",
+          "type": "text/plain; charset=utf-8",
+          "rel": "http://opds-spec.org/acquisition/open-access"
+        }
+      ]
+    }
+  ]
+}

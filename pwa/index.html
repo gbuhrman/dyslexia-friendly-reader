@@ -1,726 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; 
-style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src https://api.dictionaryapi.dev;">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dyslexia-Friendly Reader (Bookmark Fix + Holistic Speech)</title>
-<link rel="manifest" href="manifest.json">
-<style>
-  body { font-family: 'OpenDyslexic', Arial, sans-serif; background: #f8f8f8; color: #000; padding: 20px; margin: 0; line-height: 1.6; }
-  #controls { position: fixed; top: 0; left: 0; width: 100%; background: #fff; padding: 10px; border-bottom: 1px solid #ccc; z-index: 1000; display: flex; flex-wrap: wrap; gap: 10px; }
-  #content { margin-top: 300px; max-width: 800px; margin-left: auto; margin-right: auto; position: relative; }
-  #story { white-space: pre-wrap; text-align: left; cursor: pointer; }
-  #definitionPopup { position: absolute; background: #fff; border: 1px solid #ccc; padding: 5px 10px; font-size: 0.9em; border-radius: 5px; display: none; z-index: 2000; max-width: 300px; }
-  .highlight-chapter { background: yellow; transition: background 2s ease; }
-  .reading-highlight { background: #ffff99; border-radius: 3px; }
-  footer { position: fixed; bottom: 0; width: 100%; background: #eee; padding: 5px; font-size: 0.8em; text-align: center; }
-</style>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js');
-  }
-</script>
-
-<script>
-  const isIOS = /iP(hone|od|ad)/.test(navigator.platform) || 
-                (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
-  window.addEventListener('DOMContentLoaded', () => {
-    if (isIOS) {
-      const readBtn = document.getElementById('readAloudBtn');
-      const stopBtn = document.getElementById('stopReadAloudBtn');
-      if (readBtn) readBtn.style.display = 'none';
-      if (stopBtn) stopBtn.style.display = 'none';
-    }
-  });
-</script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dyslexia-Friendly Reader (Bookmark Fix + Holistic Speech)</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="reader.css">
+  <script src="vendor/epub/epub.min.js" defer></script>
+  <script src="reader.js" defer></script>
 </head>
 <body>
-<div id="controls">
-  <label>Font: <select id="fontSelect"><option value="OpenDyslexic, Arial, sans-serif">OpenDyslexic</option><option value="Arial, sans-serif">Arial</option><option value="Verdana, sans-serif">Verdana</option></select></label>
-  <label>Size: <input type="range" id="fontSize" min="14" max="28" value="18"></label>
-  <label>Line Spacing: <input type="range" id="lineSpacing" min="1" max="2.5" step="0.1" value="1.6"></label>
-  <label>Text Color: <input type="color" id="textColor" value="#000000"></label>
-  <label>Background: <input type="color" id="bgColor" value="#f8f8f8"></label>
-  <label>Upload: <input type="file" id="fileInput" accept=".txt"></label>
-  <label><input type="checkbox" id="autoformatToggle" checked> Autoformat readability</label>
-  <label><input type="checkbox" id="clickReadToggle"> Click-to-Read Mode</label>
-  <label>Reading Speed: <input type="range" id="speedControl" min="0.5" max="2" step="0.1" value="1"></label>
-  <button id="readAloudBtn">Read Aloud from Bookmark</button>
-  <button id="stopReadAloudBtn">Stop</button>
-  <label>Chapter: <select id="chapterSelect"><option value="">--Select--</option></select></label>
-  <button id="bookmarkBtn">Bookmark</button>
-  <button id="gotoBookmarkBtn">Go to Bookmark</button>
-</div>
-<div id="content">
-  <h1>Dyslexia-Friendly Reader</h1>
-  <h2>Upload Your Own Text to use Read Aloud Features</h2>
-  <div id="story">Howard Castle dominated the landscape. The high central dome pierced the clouds. The halls were lined with large windows designed to let in excess sunlight, illuminating the numerous paintings and tapestries that lined the walls. The grounds surrounding the Castle were perfectly manicured. The long, well-groomed lawns ensured visitors would have a long, uninterrupted view of the Castle as they made their way to the entrance, and that was the point. The Right Honorable Charles Howard, 3rd Earl of Carlisle, who had died 8 years ago in May, built to impress. The Castle was more than a home; it was a masterpiece of architectural ambition that was the outward manifestation of his political ambition. In his prime, Lord Charles Howard rose to the highest of political offices, acting for a time as the Lord Justice of the Realm, holding England together for a short time between the reigns of Queen Anne and King George I. In his time, Howard Castle played host to monarchs, generals, and the other Lords of the land. Many came to Howard Castle seeking political favors and alliances, and the long walk to Howard Castle ensured they arrived dutifully impressed with the power and privilege that resided there.
-Designed by Sir John Vanbrugh, its baroque splendor was unmatched. The estate contained vast gardens with classical statues, cascading fountains, and hedges stretching toward the River Derwent. It was a world of refinement and excess, where every corner whispered of the family's legacy, a legacy that William Howard, the grandson of Lord Charles, would one day squander.
-Within these walls, young William Howard lived a life most boys could only dream of, a life defined by luxury, indulgence, and the reckless abandon that often accompanies youthful entitlement.
+  <div id="controls">
+    <label>Font: 
+      <select id="fontSelect">
+        <option value="OpenDyslexic, Arial, sans-serif">OpenDyslexic</option>
+        <option value="Arial, sans-serif">Arial</option>
+        <option value="Verdana, sans-serif">Verdana</option>
+      </select>
+    </label>
+    <button id="testVoiceBtn" type="button">Test Voice</button>
+    <p id="testVoiceSample" style="margin:0;padding:0;font-size:0.9em;color:#555;">Sample: "The quick brown fox jumps over the lazy dog."</p>
+    <label>Size: <input type="range" id="fontSize" min="14" max="28" value="18"></label>
+    <label>Line Spacing: <input type="range" id="lineSpacing" min="1" max="2.5" step="0.1" value="1.6"></label>
+    <label>Text Color: <input type="color" id="textColor" value="#000000"></label>
+    <label>Background: <input type="color" id="bgColor" value="#f8f8f8"></label>
+    <label>Upload: <input type="file" id="fileInput" accept=".txt"></label>
+    <label><input type="checkbox" id="autoformatToggle" checked> Autoformat readability</label>
+    <label><input type="checkbox" id="clickReadToggle"> Click-to-Read Mode</label>
+    <label>Reading Speed: <input type="range" id="speedControl" min="0.5" max="2.5" step="0.1" value="1"></label>
+    <label>Voice: 
+      <select id="voiceSelect" aria-label="Voice selection">
+        <option value="">Loading voices…</option>
+      </select>
+    </label>
+    <button id="readAloudBtn">Read Aloud from Bookmark</button>
+    <button id="stopReadAloudBtn">Stop</button>
+    <label>Chapter: <select id="chapterSelect"><option value="">--Select--</option></select></label>
+    <button id="bookmarkBtn">Bookmark</button>
+    <button id="gotoBookmarkBtn">Go to Bookmark</button>
+  </div>
 
-Howard Castle, 1746, William age 14, Hannah age 8
-The forge glowed like a furnace heart in the stone building near the stables. Iron hissed and sparked as it met water, and the smell of singed hair and hot metal hung thick in the air.
-William Howard stood near the wide entrance, his velvet coat and polished boots far too fine for the grime around him, but he didn't care. He watched the broad-shouldered man at the anvil, sweat-soaked hammer rising and falling steadily. It was hypnotic.
-Next to the man stood a girl, barefoot, hair tied back with a leather thong, holding a glowing horseshoe in a pair of tongs almost as big as her arms. She was focused, intent. She was also the only person who didn't mind that William asked a thousand questions.
-“That's the third time you've come this week,” Hannah Psalter said without looking up. “Do you ever go to your lessons?”
-“I've already had Latin this morning,” William said. “And my tutor has gout again.”
-Hannah rolled her eyes like a girl who'd heard more excuses than horseshoes clink in a day. “You just like the horses.”
-“I do,” he said. “And your father says if I watch long enough, he'll let me fit one myself.”
-She gave him a look, part skeptical, part amused. “Only if you're not afraid of fire. Or of being wrong.”
-William grinned, a bit of soot already on his nose. “I'm not afraid of anything.”
-Hannah smirked. “Then we'll see how you do with the hoof of Lady Maybelline. She bites.”
-“She does not.”
-“She bit me last week.”
-William blinked, then laughed. “Very well. Maybe I am a little afraid of her.”
-Hannah laughed, too, with a bright sound that cut through the forge's clang and crackle. It startled William just a little. He hadn't known girls could laugh like that, like they weren't pretending.
-In that moment, she wasn't a blacksmith's daughter, and he wasn't the son of a lord. They were two children standing in a halo of light and ash, watching a glowing arc of iron become something useful, something lasting.
+  <div id="content" role="main" aria-live="polite">
+  <section id="voiceTest" class="voice-test" aria-label="Voice test area">
+    <p id="voiceTestText" contenteditable="true">
+      This is a short test paragraph to audition the selected voice. 
+      You can edit this text or select any text on the page and click “Speak selection”.
+    </p>
+    <button id="speakSelectionBtn">Speak selection</button>
+  </section>
 
-While the gardens at Howard Castle were numerous and impressive and attracted many visitors and guests, in Williams's mind, the best thing about Howard Castle was the horses. The stables at Howard Castle were home to over thirty horses. Four pairs of Hanoverian Creams were used as carriage horses for taking Lord Howard, Lady Anne, and their guests to and from York or London. The carriage horses had the same light golden hue in the sunlight as the Castle itself. They were a gift to Lord Howard from some German prince, and they were his pride and joy. There were also work horses for the grounds and the farms, hunting horses for the fox hunts, and William’s favorites, the riding horses.
-Like William, the hunting and riding horses also lived carefree lives, grazing in the field until they were needed. The horses were the pride of Howard Castle, and the Howards employed their own blacksmith and farrier to make the horseshoes, trim their hooves, and shoe them. The blacksmith was Philip Psalter. With the somewhat useful help of his daughter, Hannah, and John Smithy, the Howard Castle farrier, they kept the horses shod and in top condition.
-The wind carried the tang of iron filings and spring rain as William rounded the bend toward the village forge again, though he told himself the colt, not the company, drew him back.
-Philip Psalter had bred a spirited grey mare the previous year, and word in the stable yard was that the foal had inherited every bit of its mother's fire. William had asked if he might see it, though no one had been quite certain why the young master had taken such an interest.
-When he arrived, the colt was tied to a rail outside the forge, snorting and half-rearing against the lead. But it wasn't the blacksmith holding the rope.
-It was Hannah.
-She was barefoot this time, her feet blackened with soot and straw, but she stood firm as the colt danced sideways.
-“You'll break your fool legs,” she muttered, tightening her grip.
-William approached slowly, one brow lifted. “What are you doing?”
-She glanced up, a curl of hair plastered to her brow. “He needs to get used to the smell. Fire and iron. He can’t be kicking the farrier when he’s trying to shoe him.”
-“He's barely out of the paddock.”
-“He's also clever. And if I wait for my father to spare the time, it'll be autumn.”
-William stood beside her and eyed the colt. “He's wild.”
-“So are you,” she said, without looking at him.
-He blinked. “Excuse me?”
-“I saw you pacing behind the forge two days ago like you were going to leap out of your skin.”
-He folded his arms. “I was thinking.”
-“Dangerous pastime.”
-“I'm beginning to see that.”
-The colt jerked again, nearly pulling free. William reached out instinctively, catching the rope just behind her hands. They were warm and calloused. She didn't pull away.
-“You're not afraid of anything, are you?” he asked.
-Hannah shrugged. “I'm afraid of thunder. But not this.”
-He was quiet for a moment. Then: “He'll need a proper name, that one.”
-“He's had one,” she said. “I named him Flint.”
-“Why Flint?”
-She finally looked at him. “Because he's all fire and stone. You have to strike him just right, or he's nothing but sparks.”
+    <h1>Dyslexia-Friendly Reader</h1>
+<section id="epubPanel" hidden aria-label="EPUB Reader">
+  <div class="epub-controls">
+    <button id="epubPrevBtn" aria-label="Previous page">Prev</button>
+    <button id="epubNextBtn" aria-label="Next page">Next</button>
+    <label>EPUB Font Size: <input type="range" id="epubFontSize" min="80" max="180" step="10" value="100"></label>
+    <button id="epubSpeakBtn">Speak current page</button>
+    <button id="epubCloseBtn">Close EPUB</button>
+  </div>
+  <div id="epub-viewer" style="width:100%;height:70vh;border:1px solid #ddd;border-radius:10px;background:#fff;"></div>
+</section>
+    <h2>Upload Your Own Text to use Read Aloud Features</h2>
+    <div id="story">
+      Howard Castle dominated the landscape. The high central dome pierced the clouds. The halls were lined with large windows designed to let in excess sunlight, illuminating the numerous paintings and tapestries that lined the walls. The grounds surrounding the Castle were perfectly manicured. The long, well-groomed lawns ensured visitors would have a long, uninterrupted view of the Castle as they made their way to the entrance, and that was the point. The Right Honorable Charles Howard, 3rd Earl of Carlisle, who had died 8 years ago in May, built to impress. The Castle was more than a home; it was a masterpiece of architectural ambition that was the outward manifestation of his political ambition. In his prime, Lord Charles Howard rose to the highest of political offices, acting for a time as the Lord Justice of the Realm, holding England together for a short time between the reigns of Queen Anne and King George I. In his time, Howard Castle played host to monarchs, generals, and the other Lords of the land. Many came to Howard Castle seeking political favors and alliances, and the long walk to Howard Castle ensured they arrived dutifully impressed with the power and privilege that resided there.
+      Designed by Sir John Vanbrugh, its baroque splendor was unmatched. The estate contained vast gardens with classical statues, cascading fountains, and hedges stretching toward the River Derwent. It was a world of refinement and excess, where every corner whispered of the family's legacy, a legacy that William Howard, the grandson of Lord Charles, would one day squander.
+    </div>
+    <div id="definitionPopup" role="status" aria-live="polite"></div>
+    
+<section id="libraryPanel" aria-label="Library and OPDS" style="margin-top:1rem;">
+  <h2>Library</h2>
+  <div class="lib-controls" style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0;">
+    <input id="libSearch" type="search" placeholder="Search title or author" aria-label="Search">
+    <select id="libGenreFilter" aria-label="Filter by genre">
+      <option value="">All genres</option>
+    </select>
+    <select id="libSort" aria-label="Sort by">
+      <option value="title">Sort: Title</option>
+      <option value="author">Sort: Author</option>
+      <option value="fk">Sort: FK Grade</option>
+      <option value="df">Sort: DF Score</option>
+    </select>
+    <button id="libRefreshBtn" type="button">Refresh</button>
+  </div>
 
-The forge was quieter than usual that morning. No horses, no bustle. Just the fire's low roar, the bellows' rhythmic creak, and Hannah's small frame silhouetted against the hearth glow.
-William hesitated at the threshold.
-She didn't turn. “You're late.”
-“I wasn't aware we had an appointment.”
-“The other day, you said that iron work looked easy,” she continued. “Now’s your chance to prove it. The forge is still lit, and Father has gone to town all day. The iron won't wait for your lordship's leisure.”
-William smirked but stepped forward. “Are you seriously suggesting I try my hand at smithing? We probably shouldn’t be anywhere near the forge without your father around. Isn’t it dangerous?”
-“It is dangerous if you don’t know what you’re doing. I already told you, I’ve been watching my father work iron for years. What’s the matter? Are you too scared? Don’t you trust me?”
-“I’m not afraid of anything.”
-She pointed to the smaller anvil. “That's yours. We're starting with nails.”
-“Nails?”
-“If you can't make something simple, you've no business shaping anything else.”
-He removed his coat, hesitated, and then rolled up his sleeves. The forge's heat hit him immediately, oppressive, alive, like it had weight. Hannah showed him the tongs, the hammer, and how to hold the glowing rod.
-“You need to know when it's ready,” she said, eyes sharp. “Too cold, and it won't bend. Too hot, and it's ruined.”
-He made his first strike. It was awkward, clumsy, and too heavy.
-“No,” she said, grabbing his hand. “Don't hit it. Shape it.”
-William glanced at her. She was so small beside him, but sure and steady. He nodded and tried again. The second blow was better, and the third was better still.
-By the fourth, sweat was rolling down his back, and Hannah was smiling.
-“There,” she said. “You're listening.”
-He looked at her. Not at the nail, but at her face glowing faintly in the firelight.
-“To the metal?”
-“To yourself,” she said. “And perhaps to me.”
-There was a long pause as they watched the embered rod fade from orange to black.
+  <div class="opds-controls" style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0;">
+    <select id="opdsSourceSelect" aria-label="OPDS source">
+      <option value="./opds/index.json" selected>Local OPDS (bundled)</option>
+    </select>
+    <input id="opdsCustomUrl" type="url" placeholder="https://example.com/opds/index.json" aria-label="Custom OPDS URL" style="min-width:20rem;">
+    <button id="opdsLoadBtn" type="button">Load OPDS</button>
+  </div>
 
-William was the fourth son of Lord Howard, a man of impeccable lineage and considerable wealth. The oldest brother, Henry, bore the weight of inheritance and expectation. The next oldest, John, always oversaw Howard Castle building and repairs. Thomas was expected to join the clergy, although truthfully, no one, including Thomas, gave that much of a chance. William was left mainly to his own devices. With no responsibility, he was free to have fun. William spent his time hunting, eating, racing horses, and gambling.
-His father had provided the finest tutors, ensuring William was well-versed in Latin, history, and mathematics, but they had a difficult time keeping William indoors, especially in the spring.
-It began with a harmless dare, as most things did with William. He was fourteen, restless, and eager to prove himself to his elder brothers. Henry, ever disdainful, baited him into a bet that William couldn't ride the length of the orchard wall without saddle or reins.
-John, standing nearby, had exchanged a look with Thomas. John was concerned, and Thomas had a spark of mischief that might just as well have lit the tinder.
-“I'll wager my new riding boots he lands on his backside,” Thomas had muttered. But he also gave William a secret nod of encouragement, the kind only older brothers give when they want you to succeed but know you probably won't.
-William accepted the dare, of course. He always did. “York can do it. It will be easy for him.” William bragged with a laugh.
-York was a special birthday present to William from Lord Howard. York’s dam was a Cleveland Bay, and he was sired by the grandsire of Flying Childers himself. York was no pure racer, but even as a three-year-old colt, there was fire in his gait.
-William climbed astride the colt bareback, gripping only the tangled mane, and urged the horse into a gallop.
-He made it halfway before York spooked at a low-hanging branch. William tumbled sideways, struck the ground hard, and came up with a mouth full of leaves and a gash on his temple.
-John assisted him up and quietly bound the cut with a handkerchief. Thomas winced and clapped him on the back. “You almost had it, Will.”
-But Henry laughed. “A fool and his pride are soon parted.”
-William had said nothing, but the sting of Henry's laughter lodged deeper than the wound.
-He did not forget it. Nor, in truth, did he learn from it.
+  <div id="libStatus" style="margin:.25rem 0;"></div>
+  <ul id="libList" style="list-style:none;padding:0;margin:0;display:grid;gap:.5rem;"></ul>
+</section>
 
-In the following years, William would take greater risks for smaller rewards, often with the same reckless pride. He told himself he was proving something to his brothers, the world, and himself, but more often than not, he ended up humiliated or wounded, his pride far more fragile than he'd let on.
-He admired Thomas for his careless charm, for the way he laughed off danger and wore mischief like a badge of honor. He envied John's quiet steadiness, even as he dismissed it. And he both feared and resented Henry, who always seemed to know when William would fail and never hesitated to announce it beforehand.
-Though Howard Castle provided every comfort, William often felt like an outsider in his home. Henry ruled the corridors with cold certainty. Thomas wandered them with laughter on his breath, and John read quietly in the corners. Neither eldest nor particularly dutiful, William fell through the cracks, unwatched, undirected, and increasingly unruly.
-As he entered his later teens, he grew adept at charming stable hands and kitchen maids, but he hadn't yet tried the effect of his charms on a lady.
-The afternoon sun dappled the gravel path as William followed the sound of conversation past the hedgerow. A party from Howard Castle had arrived at Fairfax Park earlier that week, and in return, the Fairfaxes had now come to stay for a short visit, ostensibly to see the new rose gardens, but in truth, to speak of land, lineage, and the future.
-William had intended only to escape the drawing room where tea was being served with excruciating slowness. He had not expected company in the orchard.
-A young woman stood beneath the boughs of an old apple tree, bonnet slung over one arm, the sleeves of her riding dress unbuttoned and folded back, revealing arms lightly freckled from time in the sun. She was speaking to a gardener, not ordering but explaining with the calm authority of someone accustomed to being obeyed, even without insisting upon it.
-“You needn't trim so closely here,” she said, indicating the base of a gnarled branch. “The lower growth will soften the line and keep the bees longer.”
-The gardener scratched his chin, nodded, and moved on. She turned, only then noticing William.
-He immediately sensed he'd been caught trespassing, though the orchard was his and not hers.
-“I hope I'm not interrupting a horticultural lecture,” he said, attempting a bow that came off more casual than courtly.
-“You are,” she replied without smiling.
-That gave him pause. Most young ladies at least pretended to be pleased when addressed. This one merely waited.
-“I was... taking the air,” he added. “And not expecting to be quizzed by an arborist.”
-“Then we are both disappointed,” she said. “I had hoped for better manners from Howard Castle.”
-He laughed. “Then you've been grievously misled. We're known only for horses and losing at cards.”
-A flicker of amusement touched her face. “Then I shall adjust my expectations accordingly.”
-There was a moment of silence, not awkward, but taut, a thread pulled just short of breaking.
-“I don't believe we've been introduced,” he said, though he had an inkling who she might be.
-She curtsied, properly but without flourish. “Lady Lucia Fairfax.”
-“Of course,” he said, more certain now.
-Her gaze swept the orchard. “The estate is lovely. And rather more useful than I expected.”
-“You're a judge of utility?”
-“I'm my father's steward in all but name,” she replied, brushing a strand of dark hair from her cheek. “He tires easily and has little patience for figures, so I keep the ledgers and attend to the tenants. When I'm not being sent to admire roses.”
-“Sent?” he echoed.
+  </div>
 
-
-
-
-
-### CHAPTER 2
-
-She met his eyes. “This visit was not my idea, Mr. Howard. Nor yours, I expect.”
-He tilted his head. “You think we are pawns in someone else's game?”
-She didn't smile, but her voice was light. “I think your mother and mine are acquainted. I think your father has been heard to remark that Howard Castle could do with an alliance of fresh coin. And I think my dowry has been calculated to the last acre.”
-William blinked. That honesty usually came after three glasses of wine, not in an orchard on a Tuesday.
-“Do you always speak so plainly?” he asked.
-“Only to those who appear not to be listening.”
-He chuckled, despite himself. “And if I were listening?”
-She studied him for a moment. “Then I would say this: I came to Howard Castle to see the estate. Not the family.”
-William pretended to look wounded. “We're not all useless.”
-She raised one eyebrow. “You're the youngest son, aren't you? The one who wagered at the orchard wall and broke his arm.”
-“I see the rumors have reached Fairfax Park.”
-“Not rumors,” she said, almost gently. “Just stories. And you're still standing, which is more than most men manage after a fall.”
-He stared at her, unsure whether she had insulted or praised him.
-She inclined her head again. “If you'll excuse me.”
-He stepped aside to let her pass. As she did, she glanced back over her shoulder.
-“Next time, bring a ladder,” she said. “The blossoms at the top are the sweetest.”
-And then she was gone, leaving only the scent of apple and something unnameable in her wake.
-Later that week, the guests were led out after breakfast to admire the early roses. Ever the curator of appearances, Lady Howard insisted that the climbers near the south wall were “at their absolute height.” However, most party members appeared more interested in locating shade than scent.
-William lingered at the rear, hands clasped behind his back in a studied imitation of attentiveness. The rose garden had never interested him much, except that now, it did.
-Lucia was kneeling beside a pale pink bloom, gloveless, her fingertips lightly brushing the petals in a way that made him forget, for a moment, that roses were supposed to be admired only from a distance.
-“This one is pretending to be a rose,” she said, not turning as he approached.
-He stepped forward. “And succeeding?”
-She glanced up at him, her expression unreadable. “Not quite. It tries too hard. A true rose is subtle. It lets others speak of its beauty.”
-“That sounds like a lesson.”
-“Only if you require one.”
-He smiled. “I do seem to be collecting them lately.”
-Lucia rose slowly, dusting her skirts with a practiced flick. “Perhaps you are simply unaccustomed to women who do not flatter.”
-“On the contrary,” he said. “I'm quite fond of them.”
-She didn't smile, but her eyes softened just enough to make him wonder what she might look like without so many careful expressions.
-They walked silently for a few paces, the path narrowing between two hedgerows.
-“I've been told,” she said at last, “that your horse York has recovered.”
-“He has,” William replied. “Though I suspect he remembers my last mistake more clearly than I do.”
-Lucia folded her arms. “Do you ever regret it? The race, I mean.”
-He considered that. “I did get in a great deal of trouble for it. My father told me York was too young and not ready to be raced. He said I needed to learn patience, and it was lucky York wasn’t seriously hurt, but York’s well-trained now. When I race him again, I’ll win, and everyone will tell different stories next time.”
-Lucia stopped walking. The breeze stirred her hair, and the scent of roses drifted between them like something unsaid.
-“There are easier ways to be noticed,” she said. “You're a Howard.”
-“But not the right kind,” he said. “Not for the ones that matter.”
-Lucia turned toward him fully, her expression sharper now. “And who decides what matters?”
-“I suspect you do,” he said, too quietly.
-The moment stretched, a single thread of something too dangerous to name pulling taut between them.
-Lucia's gaze dropped. “My father believes I've stayed too long in Yorkshire. That I've been too selective.”
-“Selective?” William echoed.
-“I've turned down two proposals in as many years,” she said. “And Howard Castle is meant to change that.”
-He blinked. “Ah.”
-She met his eyes again. “I thought you should know.”
-William gave a short nod. “Then let me say only this. If you are being selective, I hope you'll not mistake ornament for substance.”
-Lucia's lips curved into the faintest smile.
-“No,” she said. “I never have.”
-Then, with a curtsy as proper as any duchess's, she stepped past him to rejoin the party.
-William remained behind momentarily, watching the sway of her skirt as it disappeared around the hedge.
-
-1750, A Letter from Berlin
-Lord Howard sat at the head of the long oak table, a glass of claret in one hand, the other resting idly atop a folded parchment marked with a foreign seal. His sons, Henry, John, Thomas, and William, sat next to him, each in various stages of feigned or genuine attention. Lady Anne sat quietly at the end of the table, her expression polite but wary.
-Lord Howard tapped the parchment once, lightly, to command the room.
-“Berlin writes again,” he said, voice carrying easily through the hall. “King Frederick of Prussia, no less, seeking my intervention with Parliament on the matter of subsidies.”
-Thomas raised an eyebrow. “A king asking you for help? Are things so desperate in Europe?”
-“Desperate enough,” Lord Howard said dryly. “Frederick has won Silesia, but cannot afford to keep it. The war was expensive, and Prussia needs fresh coin.”
-He sipped his wine, savored it, and continued. “Frederick wants assurances that our support will not falter.”
-Henry, eldest and most proper, leaned forward. “Will you assist him, Father?”
-Lord Howard smiled thinly. “I will. Not because I owe him allegiance, but because it suits my interests.”
-He gestured grandly with the glass. “It reminds certain ears in Parliament that the Howards still carry weight. It reminds certain ministers that I can still grant favors.”
-There was a pause as the footmen cleared away the second course. William allowed himself a small smile.
-“It is not every day a king seeks favors from Howard Castle,” he said.
-Lord Howard caught the expression and allowed himself to chuckle. “No, young William. Mark it well. Kings and ministers flatter when it suits them, and forget you exist the moment it does not.”
-He leaned back, surveying his sons with a measured gaze.
-John, ever cautious, said, “And the expense, Father? What will this cost us?”
-Lord Howard's mouth twitched. “A few dinners, a few letters, a few assurances at the proper moment. A few coins from my purse.”
-He lifted the letter from Berlin and waved it slightly. “I will offer mostly words. Words are the cheapest form of loyalty a man can spend.”
-Lady Anne cleared her throat gently. “And what shall you ask in return?”
-Lord Howard smiled, a tight, private smile. “Nothing. For now. The debt itself is worth more than any payment.”
-At this, the sons exchanged glances. Thomas smirked. Henry nodded approvingly. William's eyes gleamed with something harder to name, ambition, perhaps, or the first stirring of admiration for a man he had often resented.
-Lord Howard drained his glass and set it down with deliberate finality.
-“Let the Prussian King remember that when he counted his allies, he found a Howard still among them.”
-“Now, to more pressing matters. William, you are eighteen now, and it is high time you took life more seriously. We are hosting the Howard Cup in a few weeks, and I have a particularly important job for you.”
-William looked up, suddenly keenly interested. “York is more than ready for the race. We’ve been training for months now. We won’t let you down.”
-“I’m not talking about the race, William.” I’m talking about politics.”
-“Politics?” a confused William sputtered.
-“Yes son, politics. We will be hosting Lords and Ladies from all over England. Lord Fairfax is crossing the Atlantic from Virginia and is bringing a young ward of his, George something or other, who is eighteen, your age. You are charged with entertaining the young man while he is here.”
-“But I don’t have time for that,” argued William. “York and I have to train for the race.”
-“I’ve already told you. The race is not what is important. This is not a request, William. You will do what you are told and maintain the dignity of our house.” Lord Howard rapped the table for emphasis.
-
-The horns had sounded at dawn, shrill in the morning mist that clung to the fields beyond Howard Castle. Now, hours later, the hunt was drawing to its climax, the hounds baying wildly as they cornered the fox in the tangled woods along the estate's western border.
-William leaned forward in the saddle, laughing aloud as York plunged through the bracken, mud flying from his hooves. At his side rode George, face alight with the same reckless joy.
-For all his colonial manners, the Virginian was a superb horseman, fearless over hedges and swift in the chase. If William harbored any lingering doubts about his new acquaintance, the morning’s ride had banished them.
-The fox made one last desperate sprint across a shallow brook, but the hounds were upon it, and the hunt ended in a flurry of noise and triumphant shouts. The boys were ecstatic with their triumph, flushed and laughing, their coats muddied, their boots dripping.
-William swung down from his horse, clapping George on the shoulder.
-“By God, Washington, you ride better than half the court!” he said, grinning. “I’d have wagered no man from the colonies could keep pace with Yorkshire hounds.”
-George laughed, his face flushed with cold and exertion. “We breed good horses in Virginia,” he said modestly. “And a man learns quickly on the frontier.”
-They handed off their mounts to the grooms and strolled toward a low stone wall overlooking the distant fields. They stood in companionable silence, breathing in the sharp, clean air.
-It was George who spoke first, his voice quieter, more thoughtful.
-“You have fine lands here,” he said. “Tamed, ordered... centuries of labor made visible. But beyond the mountains, beyond the Ohio, there is so much land a man could ride for days without seeing another soul.”
-William turned to study him, intrigued.
-“In Virginia?” he asked.
-“Virginia... and beyond,” George said, eyes alight. “Forests thicker than any in Europe. Rivers broader than the Thames. Game so plentiful a man might feed a village with a single day's hunt.”
-He paused, searching for the right words. “There is room there for a new kind of life. A man who can ride, shoot, and tame the wild could carve out a kingdom for himself, no matter his birth.”
-William felt a strange stirring in his chest, a mixture of excitement and yearning.
-“And you would go there?” he asked, half in awe.
-George smiled, a little wistfully. “I would. I will.”
-He turned back to the view, the sunlight glinting off his damp riding coat. “We will make a new colony, west of the mountains. A place where skill and courage matter more than ancestry. A place where a man makes his own destiny.”
-For a long moment William said nothing. He looked out across the fields, neat hedgerows, ancient oak trees, the ordered beauty of generations. It was lovely, yes, but it was... fixed. Finished. Every stone, every path laid down by men long dead.
-The idea of an untamed land, of a future written not by inheritance but by will, thrilled him in a way he could not yet fully name.
-“A new Eden,” he said softly.
-George laughed, but there was no mockery in it. Only hope. “Perhaps. Or a new Rome. That will depend on the men who shape it.”
-They stood together a while longer, two young men dreaming of impossible empires, while the grooms saddled fresh horses and the echoes of the hunt faded into the brightening day.
-
-The drawing room at Howard Castle was a blaze of candlelight, the polished wood floors reflecting soft gleams from the chandeliers above. Footmen moved among the guests with quiet efficiency, bearing trays of wine. Conversations rose and fell, punctuated by polite laughter and the occasional clink of glass against glass.
-William and George lingered near the hearth, both more stiffly attired than they would have preferred. George fidgeted with his cuffs; William hid his discomfort behind a practiced ease, surveying the assembly with an air of mild amusement.
-It was then that she entered.
-Lucia Fairfax.
-She moved through the room with the confidence of a woman well aware of her beauty and wit. Her gown was of pale blue silk, simple yet exquisitely cut to flatter her figure without ostentation. Dark hair gleamed in the candlelight; a single sapphire pendant rested at her throat.
-William straightened instinctively. Beside him, George seemed to forget whatever awkward comment he had been preparing.
-Lady Anne rose to greet Lucia warmly, and a ripple of interest passed through the room. In the quiet moment that followed, Lucia's gaze swept the assembly and settled, unmistakably, upon the two young men by the fire.
-William, never slow to respond to encouragement, stepped forward and offered a bow.
-“Miss Fairfax,” he said, voice low and polished. “Howard Castle is honored by your presence.”
-Lucia curtsied, the barest dip that somehow conveyed amusement and grace. “The honor is mine, William,” she said, her voice musical, lightly teasing. 
-At this, George found his voice. “If Miss Fairfax cares for sport, she will find no better hunting ground this side of the colonies.”
-Lucia turned her smile upon him, and for an instant, William felt, absurdly, as though the hearth had gone cold.
-“And you, sir?” she asked, tilting her head in interest. “Do you ride with the same daring as you compliment?”
-George flushed slightly but met her gaze steadily. “I do my best, madam.”
-Lucia laughed, a bright, ringing sound that drew the attention of several older gentlemen across the room. She turned back to William and then to George, her eyes dancing.
-“It seems I am to be spoilt for choice,” she said lightly. “Perhaps I ought to set a challenge.”
-William, catching the mischief in her tone, grinned. “Name it, Miss Fairfax, and it shall be done.”
-Lucia tapped her fan thoughtfully against her gloved hand, as though considering. Then, with a conspiratorial glint in her eye, she said:
-“The race tomorrow. The race for the Howard Cup everyone is so excited about. Let it be more than mere sport.”
-She allowed a pause, perfectly judged. “Let it be... a contest for my favor.”
-The room around them seemed to recede, the sounds of conversation dimming under the weight of her words.
-George recovered first, bowing with solemn courtesy. “If Miss Fairfax decrees it, then I shall ride with all my skill.”
-William swept an exaggerated bow of his own. “As shall I.”
-Lucia laughed again, delighted by their performances. She lowered her fan and favored each of them with a glance, approving, amused, and yet elusive.
-“Then I shall watch tomorrow with keen interest,” she said. “And the victor may claim …” she tapped her chin theatrically, “a dance... or perhaps a stroll in the gardens.”
-She let the words linger in the air, then turned with a graceful swish of silk and moved on, leaving William and George standing shoulder to shoulder, each grinning like schoolboys and measuring the other with new and sharper eyes.
-The laughter had scarcely faded when Henry approached. His gaze flicked briefly to where Lucia Fairfax now stood, engaged in light conversation with Lady Anne, before settling coldly on his younger brother and the Virginian.
-“Enjoying yourselves, are you?” he said, voice deceptively light.
-William, still buoyant from Lucia’s favor, clapped Henry on the shoulder. “Why not, brother? A fine hunt, a fine evening, and the prospect of a race to crown it all. Even you must approve.”
-Henry’s mouth twitched, not a smile, precisely. “A race,” he said. “Yes. Your skill in the saddle will be tested, William. Against seasoned men, not merely colonial pups.”
-Sensing something in Henry’s tone, George offered a polite bow and withdrew toward the refreshment table, leaving the brothers alone.
-William laughed carelessly. “I think I shall acquit myself well enough.”
-Henry’s eyes narrowed. He stepped closer, lowering his voice so that none but William might hear.
-“High words, for a boy who has never bested me in a race worth speaking of,” he said. “Or in anything else, come to that.”
-William stiffened, the old rivalry stinging sharper now that pride, affection, and Lucia Fairfax were tangled in the balance.
-“I’ve improved,” he said evenly. “Perhaps you will find the outcome less certain than you imagine.”
-Henry tilted his head, studying him with a calculating gaze. Then he smiled, a slow, knowing smile that raised every instinct of caution in William’s heart.
-“Shall we make it interesting, then?” Henry said. “A gentleman’s wager.”
-William hesitated. Some instinct, a flicker of warning, brushed the edge of his mind. But he pushed it aside. He would not be mocked. Not tonight. Not with Lucia watching.
-“Name it,” he said.
-Henry’s smile widened. “A year’s allowance,” he said. “Winner takes all.”
-For a heartbeat, the silence stretched between them.
-William knew he should laugh it off and refuse, pretend it was a joke, but his pride wouldn’t let him. His heart still raced from the hunt, Lucia's smile, and the easy camaraderie with George. He could not bear to seem small before Henry now.
-“Done,” William said, voice firm.
-Henry clapped him lightly on the back, the gesture far more possession than affection.
-“I shall enjoy spending your coin,” he said softly.
-Before William could respond, Henry had turned and was already making his way toward the card tables.
-William remained by the fire, the echo of the wager still ringing in his ears.
-
-The Howard Cup
-The sky was a bright, piercing blue, and the flags of Howard Castle snapped briskly in the breeze. A crowd had gathered along the outer fields. The gentlemen were dressed in long, fitted frock coats of navy, burgundy, and dark green. The ladies wore fine bonnets of brighter colors, and children darted back and forth among the rows of hedges. The Howard Cup stood on a table draped in velvet: a gleaming silver chalice, heavy with tradition and pride.
-William adjusted the girth of his mount, trying to steady his breathing. Across the field, he spotted George, calm and composed atop a chestnut stallion. Henry stood, looking grim and triumphant before the race had even begun.
-Lucia Fairfax was among the onlookers, her parasol tilted against the sun, her smile a secret thing. William caught her eye, and she offered a barely perceptible nod, a spark of encouragement he tucked deep into his heart.
-The horn sounded.
-They were off.
-William surged forward, the wind tearing at his coat, the thundering of hooves a deafening drumbeat in his ears. He rode with reckless joy at first, laughing aloud as York cleared the first hedge easily.
-But Henry rode harder, sharper, cutting corners, pressing his mount with merciless skill.
-For his part, George rode with a calm, measured grace, keeping pace but never forcing his horse beyond reason.
-William pushed harder and urged his horse faster, too fast.
-At the second brook crossing, York stumbled slightly, losing precious seconds.
-Henry shot past him, a triumphant gleam in his eye.
-By the final stretch, it was no contest.
-Henry galloped across the finish line first, raising his hand in silent victory.
-George followed soon after, stoic but dignified.
-William came in third, mud-splattered, his chest tight with the crushing weight of failure.
-The crowd roared with approval, but William barely heard it.
-He swung down stiffly, pride smarting more than any bruise.
-Henry rode up to the table where the Cup was displayed, accepted it with a deep bow, and turned toward the crowd and Lucia.
-Henry dismounted, tossing the reins to a servant, and strode toward Lucia with an arrogant gleam in his eye. The silver chalice gleamed in one hand; the implicit claim on her favor gleamed just as brightly in his smirk.
-“My lady,” he said, bowing deeply. “It seems I am the victor of the day.”
-Lucia smiled, a slow, knowing smile that would have warned any man less blinded by triumph.
-“Indeed, Sir Henry,” she said sweetly. “The Howard Cup is yours.”
-“And the prize you promised,” Henry said, stepping closer. His voice lowered, thick with anticipation. “A dance... or perhaps a stroll in the gardens?”
-Lucia’s smile widened, not with pleasure, but with exquisite amusement. She lifted her parasol daintily against the sun.
-“Ah,” she said lightly, “but you were not a party to that wager, sir.”
-Henry blinked, confusion flickering across his face.
-“I promised a stroll to the winner,” Lucia continued, “between William and Mr. Washington. As you were not among their number... I fear you must be content with your silver.”
-The nearby gentlemen smothered polite chuckles. Henry’s jaw tightened.
-Lucia turned, catching William and George's gazes, and beckoned with a playful tilt of her head.
-“Shall we, gentlemen?” she said.
-William, despite the sting of loss, grinned and offered his arm. George, ever courteous, followed suit.
-They strolled toward the gardens together, Lucia between them, laughing brightly at some jest William barely heard.
-The garden paths wound between neat hedges and early-spring blooms, the heavy scent of boxwood filling the air. Lucia chatted easily, teasing both young men about their riding styles, daring, or lack thereof, with the lightest, most charming touch.
-William laughed along, but a flicker of calculation stirred.
-George was too good, too steady, too likable.
-It would be dangerously easy for a young lady to fall for such a man.
-He nudged the conversation carefully.
-“You know, George,” William said casually, “you ought to return to Virginia soon. If all those frontier dreams of yours are to come true.”
-George smiled. “Soon enough. There is much to do.”
-Lucia tilted her head. “You have grand plans, Mr. Washington?”
-George gave her a smile touched with real fire. “Dreams of new lands, Miss Fairfax. A new world, waiting beyond the mountains.”
-Lucia’s eyes gleamed with interest, but William caught the faint wistfulness too, the subtle distance.
-He pressed the advantage lightly. “A man like you will surely find greatness across the sea. We shall undoubtedly hear your name spoken with admiration on both sides of the Atlantic.”
-George laughed modestly, and they walked on, the moment passing.
-
-The great hall of Howard Castle, usually reserved for formal gatherings and solemn occasions, now stood empty but for the heavy footfalls of Lord Howard pacing before the hearth. The fire had burned low; the vast stone room felt colder than the spring air outside.
-William entered with a slight swagger still clinging to his step, the bravado of youth not yet extinguished. He bowed perfunctorily.
-“You sent for me, Father?”
-Lord Howard turned sharply. “Indeed I did,” he said, his voice low and dangerously controlled. “Sit.”
-William obeyed, sensing, too late, that this would not be a lecture he could charm his way through.
-Lord Howard regarded him for a long moment, the silence thick between them. Then he spoke, each word heavy with deliberate weight.
-“Tell me, William,” he said, “what is the measure of a gentleman?”
-William shifted, uncertain. “Honor,” he said. “Courage. Skill.”
-Lord Howard snorted. “Foolishness,” he said flatly. “A gentleman is measured by his respect for his family, for his name, for the obligations his birth has placed upon him.”
-He crossed the room, each step a quiet drumbeat of judgment.
-“You have wagered away a year’s allowance,” Lord Howard continued, “in a childish contest with your brother. That alone I might overlook. A young man's pride must be tempered somehow.”
-William opened his mouth to protest, but Lord Howard silenced him with a look.
-“No, it is not the money, William. It is your conduct. Before our guests. Before the delegation from Virginia. Before Lord Fairfax’s own kin.”
-His voice rose slightly, the chill cracking into fire.
-“You made a spectacle of yourself. Laughing, flirting, racing like stable boys before the court. And over what? A lady’s smile?”
-William flushed. “It was all in good humor, sir. No one took offense.”
-Lord Howard slammed his fist onto the table with a crack that echoed against the high stone walls.
-“You presume to judge what is and is not offense among gentlemen? Among peers and allies who carry the future of nations on their shoulders?”
-He leaned in, voice dropping to a deadly quiet.
-“Lord Fairfax is furious. His niece was made a mockery of, the object of a bet. What will Parliament think when it hears that Howard Castle now hosts parlor games instead of serious alliances? What will the King think?”
-William stared at him, stunned into silence.
-Lord Howard straightened, drawing himself to his full, imperious height.
-“You have shamed yourself. Worse, you have shamed me. You have shamed this house.”
-The words fell like hammers.
-William rose slowly, stiffly, anger flashing beneath his wounded pride.
-“I meant no disrespect,” he said through gritted teeth.
-“Intent matters little,” Lord Howard said. “It is what you do that counts William.”
-He turned away, staring at the dying fire.
-“You will leave Howard Castle within the week,” he said, voice flat. “Your allowance is forfeit. You will find lodgings elsewhere, earn your own bread if you can, and learn what it means to bear a name greater than your own.”
-William felt the room tilt, the very stones pressing down upon him.
-“Father…” he began.
-Lord Howard did not turn.
-“You may go.”
-Dismissed, like a servant.
-For a long moment, William stood frozen. Then, with a stiff bow, he turned and left the hall, the heavy oak doors groaning shut behind him.
-In the library next door, Henry listened with quiet satisfaction. His plan had worked even better than he had hoped.
-
-The sky hung low and grey over Howard Castle as William crossed the courtyard toward the stables. His coat was hastily thrown on, the collar turned up against the cold wind.
-George was already there, saddling his horse. His hat was pulled low, shadowing his face, but he looked up as William approached.
-They stood in silence for a moment, the heavy smells of leather and hay around them, the clatter of grooms moving in the background.
-“I hear you're leaving,” William said finally.
-George nodded, tightening the girth with deliberate care. “Lord Fairfax has decided that we will return to Virginia. Immediately.”
-He paused, then added with a wry smile, “Seems we've both worn out our welcome.”
-William tried to smile back, but it faltered. A knot tightened in his chest, not anger, not shame, but something heavier: the cold realization that the world was changing around him, and he could no longer laugh it away.
-“I'm sorry,” William said. “For... all of it.”
-George shook his head. “No need.” He rested a hand briefly on William's shoulder. “We've both learned something, I think.”
-William let out a short breath, almost a laugh. “What’s that?”
-George smiled, small and steady. “That dreams come harder than we think. And the cost is higher than we ever imagined.”
-They stood there for a moment longer, the stable sounds dimming around them.
-At last, George swung up into the saddle with easy grace.
-“If you ever cross the ocean, William,” he said, reins in hand, “look for me in Virginia.”
-William straightened, trying to find something to say that would not sound foolish. In the end, he simply nodded.
-“Good hunting, George,” he said.
-George grinned, touched his hat in farewell, and turned his horse toward the road leading away from Howard Castle.
-William watched him go.
-He stood there long after the grooms had drifted back to their work, staring down the empty road.
-The orchard trees swayed in the distance, the place of his boyhood races, his boyhood dreams, now seemed very far away.
-
-William was packing a small trunk the night before leaving Howard Castle for an uncertain future. The hour was late, and the corridors were dim with candlelight when the door creaked open once more.
-William turned, expecting a servant.
-It was his mother.
-Lady Anne entered without fanfare, her silk robe drawn close at the neck, her slippers silent against the stone. She moved with the quiet grace of a woman who had long since learned to glide through rooms like smoke.
-She looked at the half-packed trunk, then at her son.
-“I came to say goodbye,” she said.
-William blinked. He had not realized how much he had braced against this moment, how much he feared her silence more than his father's wrath.
-“I didn't think—” he began.
-“I know,” she said gently, crossing to the edge of the bed. “He wouldn't let me speak in the study. Not that it would have made a difference.”
-“I don't deserve your defense,” William said quietly.
-She looked at him then, and for the first time in days, her expression softened.
-“No,” she said. “You don't. But I'm your mother. I'm not here to defend you. I'm here to remind you who you are.”
-He sat on the edge of the trunk, shoulders heavy. “I don't know that anymore.”
-She came to him and smoothed a crease in his sleeve, her fingers cool and steady.
-“You are my son,” she said. “Which means you are capable of great pride and great ruin. But also, I hope, of something more.”
-William's throat tightened.
-“I made a fool of myself,” he murmured. “Of all of you.”
-Lady Anne's hand cupped his cheek, and for a moment, he was a child again. Feverish, trembling, caught in some nursery fright.
-“You are young,” she said. “You think mistakes are endings. They are not. They are invitations to begin again.”
-He looked at her, eyes shining.
-“I don't know where to begin.”
-She stepped back, composed again, though her voice trembled slightly.
-“Then let it be far from here. Let it be with someone who makes you want to deserve them.”
-He knew whom she meant.
-“You liked her?” he asked.
-“I liked that you laughed with her,” she replied. “And that you listened. I have seen you do neither since you were a boy.”
-She reached into her sleeve and withdrew a small parcel, folded linen, tied with a thin blue ribbon.
-“This was your grandfather's. Take it.”
-He untied the ribbon and found a worn compass, its brass casing dull with age. He opened the lid. The needle wobbled, then stilled.
-“It's beautiful,” he whispered.
-She bent to kiss his brow.
-“When you return, William,” she said, “return a man your children would be proud to claim.”
-Then she turned and left the room without another word, her footsteps disappearing down the corridor like the last echo of something sacred.
-
-The next morning, two maids whispered about it while passing the stables, how the young master had been cast out, how the betting had gone sour. Hannah overheard them from the farrier's stall.
-She said nothing. She just finished her work and returned to the forge. She stood for a long time near the small anvil, looking at the half-shaped nail William had made on one of his visits. It had rusted slightly. She wrapped it in a scrap of cloth and tucked it into her apron.
-That evening, she told her father she had a headache and went to bed early. But she did not sleep.
-At Fairfax Park, Lucia sat at her writing desk, quill poised but unmoving. A single sheet of parchment lay before her, unmarked.
-She had heard the outcome, of course, how Lord Howard's fury had spilled over into banishment. She had said nothing. What could she have said?
-Lucia dipped the quill in ink, hesitated, then set it down again.
-She folded the blank paper, sealed it with wax, and placed it in the fire.
-
-At dawn, William left Howard Castle by hired carriage with only a trunk, a sealed letter from Thomas, and what little dignity he could gather. The drive was long and silent. Morning mist clung to the grass, softening the outlines of the world he had once belonged to. With each mile, the estate receded into the fog behind him, as though it had never been his.
-He had no plan, only the name of a shipping agent in Bristol and vague instructions to “make something of yourself” from the man who had banished him. There was no farewell party. No stipend. Just the knowledge that whatever he did next, he would do alone.
-When the coach stopped to change horses near York, he stepped down stiffly, stretched his legs, and caught sight of his reflection in a rain-slick window.
-He didn't recognize himself.
-By the time William arrived in Bristol, the last of his coins had gone to the innkeeper, the coachman, and a bottle of indifferent gin. The city smelled of salt and sweat, of tides and ambition. It buzzed with merchants, sailors, and the scent of cargo; rum, tobacco, cloth, and something metallic he could never quite name.
-He spent the first three weeks in a waterfront tavern, where the ale was watered down, and the cards were honest only half the time. By the fourth week, he had a reputation. Not a good one.
-He played with desperation, and desperation was something every seasoned gambler could smell. He won enough to keep playing, and he lost enough to keep needing. The thrill and the ache behind the risk felt almost like purpose.
-Some nights, he thought of Henry. Some nights, he thought of Lucia and hated himself for it. Most nights, he thought of nothing but the turn of the cards and the pressure in his chest that only faded when everything was at stake.
-It ended one fog-soaked evening in a backroom game on Broad Street. William had wagered the last of his coin and the boots off his feet on a hand he should never have played. The room was too warm, the faces too familiar. Even before the final card turned, he knew he had lost.
-The men laughed. One offered to buy him a drink in mock sympathy. William did not reply.
-He left barefoot, coat open to the cold. As he stepped into the street, the rain began. Soft at first, then slicing sideways off the bay. He walked until the taverns gave way to silence, until the taste of salt on his lips was not from tears but from the sea.
-That night, he slept beneath a crate in a warehouse alley, wrapped in a stolen tarp. He dreamed of firelight, hooves, and a girl's voice saying, “You're not listening.”
-When he woke, the fog was thicker than before. Somewhere in the gray distance, a bell rang.
-She found him two days later.
-Lucia had not planned to come to Bristol. She had been in Bath with her aunt when the news reached her. It was a chance comment at a dinner party, someone remarking with cruel delight about the young Howard son seen shoeless and staggering in a dockside tavern. She said nothing then, but that night, she packed her bag.
-Now, she stood at the edge of the alley, her cloak drawn tight against the stink of low tide and rotting fruit, watching William sleep beneath a sheet of rain-warped canvas. He looked older. Hollowed.
-She took a step forward. Her boots splashed in the gutter. He stirred.
-“Don't say anything yet,” she said quietly. “Just sit up. And take the bread.”
-He blinked up at her, blinking against the light.
-“Lucia?”
-She handed him a small bundle. Bread, cheese, a wrapped fig. Something resembling kindness.
-“Eat,” she said. “Then you're coming with me.”
-“Where?”
-“Home. Or near enough to it. You're going to go back to Howard Castle. Beg if you must. You've nothing left to lose.”
-He looked away.
-“He won't forgive me, but he's my father. He only meant to teach me a lesson. He'll see that I've learned it.”
-“He doesn't have to, but you must try.”
-She watched him for a moment longer, then softened.
-“You're not done, William. You've fallen as far as a man can fall, but even now, you're not beyond reach.”
-He said nothing but took the bread.
-And for the first time in days, he ate.
-It took them five days to reach Howard Castle.
-William stood at the edge of the estate drive; the great domes of the house blurred by summer haze. He wore a borrowed coat and boots that were too tight across the toes. His jaw was freshly shaved, and his hair was tied neatly back. To an untrained eye, he looked like a gentleman coming home.
-The staff recognized him. A footman blinked in surprise. A stable boy offered a hesitant, “William?”
-He nodded as if nothing were amiss. “I'll speak with my father.”
-The butler led him to the study with a stiffness that chilled the air.
-Lord Howard did not rise when his son entered. He sat behind the great mahogany desk, spectacles low on his nose, pen still in hand.
-“You've come to beg, I presume,” he said without looking up.
-William stood straighter. “I've come to make amends.”
-Lord Howard set the pen down and finally looked at him. His eyes were cool and flat. “I gave you your portion of grace. You spent it.”
-“I've changed,” William said. “I've learned—”
-“You've disgraced this name in every public house from York to Bristol.”
-“I know. But I can—”
-“You will not live under this roof again.”
-Silence.
-William tried to hold his ground. “I have nowhere else.”
-“I've made arrangements,” Lord Howard said. “You will not stay here. But I will not have the shame of a vagrant son begging across the countryside.”
-William said nothing.
-“You will report to Captain James Mackay,” Lord Howard continued. “He's raising a company for service in the American colonies. South Carolina. You leave in a month. You'll carry your name with discipline, or not at all.”
-He passed William a sealed letter. There was no warmth in the gesture.
-William nodded. Slowly. He took the letter, turned, and left without another word.
-Lucia was waiting where he had left her. When she saw the paper in his hand, she stood.
-“Well?”
-“My commission starts within the month. I'm going to South Carolina,” he said. 
-</div>
-  <div id="definitionPopup"></div>
-</div>
-<footer>Powered by Howard Forge Press | <a href="privacy.html">Privacy Policy</a></footer>
-<script>
-let clickReadMode = false;
-let utterance = null;
-let currentFileName = "";
-let readingSpeed = 1;
-let bookmarkWordIndex = null;
-let wordElements = [];
-let textFromBookmark = "";
-let textStartOffset = 0;
-
-// Speed control
-document.getElementById('speedControl').addEventListener('input', e => { readingSpeed = parseFloat(e.target.value); });
-document.getElementById('clickReadToggle').addEventListener('change', e => { clickReadMode = e.target.checked; });
-
-// Bookmark save: top visible word detection
-document.getElementById('bookmarkBtn').addEventListener('click', () => {
-  const visibleWords = Array.from(document.querySelectorAll('.word')).filter(word => {
-    const rect = word.getBoundingClientRect();
-    return rect.top >= 0 && rect.bottom <= window.innerHeight;
-  });
-  if (visibleWords.length > 0) {
-    bookmarkWordIndex = parseInt(visibleWords[0].dataset.index) || 0;
-    if (currentFileName) {
-      localStorage.setItem(`bookmarkWord_${currentFileName}`, bookmarkWordIndex);
-      alert('Bookmark saved at current position.');
-    }
-  } else {
-    alert('No visible word detected for bookmark.');
-  }
-});
-
-document.getElementById('gotoBookmarkBtn').addEventListener('click', () => {
-  if (currentFileName) {
-    const savedIndex = parseInt(localStorage.getItem(`bookmarkWord_${currentFileName}`) || '-1');
-    if (savedIndex >= 0) {
-      const targetWord = document.querySelector(`.word[data-index="${savedIndex}"]`);
-      if (targetWord) targetWord.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      alert('No bookmark set for this file.');
-    }
-  }
-});
-
-// Read aloud holistic with highlighting
-document.getElementById('readAloudBtn').addEventListener('click', () => {
-  const savedWordIndex = parseInt(localStorage.getItem(`bookmarkWord_${currentFileName}`) || '-1');
-  if (savedWordIndex < 0) { alert('No bookmark found. Please set a bookmark first.'); return; }
-  wordElements = Array.from(document.querySelectorAll('.word'));
-  const words = wordElements.map(w => w.dataset.word);
-  textFromBookmark = words.slice(savedWordIndex).join(' ');
-  textStartOffset = words.slice(0, savedWordIndex).join(' ').length + 1;
-
-  if (utterance) speechSynthesis.cancel();
-  utterance = new SpeechSynthesisUtterance(textFromBookmark);
-  utterance.rate = readingSpeed;
-
-  utterance.onboundary = (event) => {
-    if (event.name === 'word') {
-      const charIndex = event.charIndex + textStartOffset;
-      const index = getWordIndexAtChar(charIndex, words);
-      highlightWord(index);
-    }
-  };
-  utterance.onend = () => { clearHighlights(); };
-  speechSynthesis.speak(utterance);
-});
-
-document.getElementById('stopReadAloudBtn').addEventListener('click', () => { speechSynthesis.cancel(); clearHighlights(); });
-
-function getWordIndexAtChar(charIndex, words) {
-  let count = 0;
-  for (let i = 0; i < words.length; i++) {
-    count += words[i].length + 1;
-    if (count > charIndex) return i;
-  }
-  return 0;
-}
-function highlightWord(index) { clearHighlights(); if (wordElements[index]) wordElements[index].classList.add('reading-highlight'); }
-function clearHighlights() { document.querySelectorAll('.reading-highlight').forEach(el => el.classList.remove('reading-highlight')); }
-
-// Chapter jump
-document.getElementById('chapterSelect').addEventListener('change', e => {
-  const id = e.target.value;
-  if (id) {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      el.classList.add('highlight-chapter');
-      setTimeout(() => el.classList.remove('highlight-chapter'), 2000);
-    }
-  }
-});
-
-// Click-to-read definitions
-document.getElementById('story').addEventListener('click', async (e) => {
-  if (e.target.classList.contains('word') && clickReadMode) {
-    const word = e.target.dataset.word;
-    const utter = new SpeechSynthesisUtterance(word);
-    speechSynthesis.cancel(); speechSynthesis.speak(utter);
-    try {
-      const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-      if (res.ok) {
-        const data = await res.json();
-        const definition = data[0]?.meanings[0]?.definitions[0]?.definition || "Definition not found.";
-        const popup = document.getElementById('definitionPopup');
-        popup.innerText = `${word}: ${definition}`;
-        const rect = e.target.getBoundingClientRect();
-        popup.style.left = `${rect.left + window.scrollX}px`;
-        popup.style.top = `${rect.bottom + window.scrollY + 5}px`;
-        popup.style.display = 'block';
-        setTimeout(() => { popup.style.display = 'none'; }, 5000);
-      }
-    } catch { alert('Definition lookup failed.'); }
-  }
-});
-
-// File upload and chapter detection
-function cleanText(text) { text = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n"); text = text.replace(/(\w)-\s*\n(\w)/g, "$1$2"); text = text.replace(/([^\n])\n(?!\n)/g, "$1 "); return text; }
-function autoFormatText(text) {
-  text = cleanText(text);
-  const paragraphs = text.split(/\n\s*\n/);
-  const formatted = [];
-  const sentenceRegex = /[^.!?]+[.!?]+(?:["”])?/g;
-  paragraphs.forEach(p => {
-    const sentences = p.match(sentenceRegex);
-    if (!sentences) formatted.push(p.trim());
-    else for (let i = 0; i < sentences.length; i += 4) formatted.push(sentences.slice(i, i + 4).join(' ').trim());
-  });
-  return formatted.join("\n\n");
-}
-function detectChaptersAndAddAnchors(text) {
-  const chapterRegex = /(###\s*CHAPTER\s+[\wIVXLCDM]+|^(CHAPTER|Chapter)\s+[\wIVXLCDM]+|^\s*[\dIVXLCDM]+\s*$)/gm;
-  let chapters = [], anchorIndex = 0;
-  let modifiedText = text.replace(chapterRegex, match => {
-    const anchorId = `chapter_${anchorIndex}`;
-    chapters.push({ title: match.trim(), id: anchorId });
-    anchorIndex++;
-    return `\n<a id="${anchorId}" class="chapter-anchor"></a><span class="chapter-title">${match}</span>`;
-  });
-  return { text: modifiedText, chapters: chapters };
-}
-function wrapWordsWithSpans(text) {
-  let index = 0;
-  return text.replace(/(>[^<]+)/g, (segment) => {
-    if (segment.startsWith('>')) {
-      return segment.replace(/(\b[\w'’-]+\b)/g, (word) => {
-        const span = `<span class="word" data-word="${word}" data-index="${index}">${word}</span>`;
-        index++;
-        return span;
-      });
-    }
-    return segment;
-  });
-}
-
-document.getElementById('fileInput').addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (file) {
-    currentFileName = file.name;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      let text = evt.target.result;
-      if (document.getElementById('autoformatToggle').checked) text = autoFormatText(text);
-      const { text: textWithAnchors, chapters } = detectChaptersAndAddAnchors(text);
-      const wrapped = wrapWordsWithSpans(textWithAnchors);
-      document.getElementById('story').innerHTML = wrapped;
-      const chapterSelect = document.getElementById('chapterSelect');
-      chapterSelect.innerHTML = '<option value="">--Select--</option>';
-      chapters.forEach(ch => { const opt = document.createElement('option'); opt.value = ch.id; opt.textContent = ch.title; chapterSelect.appendChild(opt); });
-    };
-    reader.readAsText(file);
-  }
-});
-
-// User preference persistence
-const content = document.getElementById('content');
-document.getElementById('fontSelect').addEventListener('change', e => { content.style.fontFamily = e.target.value; localStorage.setItem('font', e.target.value); });
-document.getElementById('fontSize').addEventListener('input', e => { content.style.fontSize = e.target.value + 'px'; localStorage.setItem('fontSize', e.target.value); });
-document.getElementById('lineSpacing').addEventListener('input', e => { content.style.lineHeight = e.target.value; localStorage.setItem('lineHeight', e.target.value); });
-document.getElementById('textColor').addEventListener('input', e => { content.style.color = e.target.value; localStorage.setItem('textColor', e.target.value); });
-document.getElementById('bgColor').addEventListener('input', e => { document.body.style.backgroundColor = e.target.value; localStorage.setItem('bgColor', e.target.value); });
-
-window.addEventListener('load', () => {
-  if (localStorage.getItem('font')) { content.style.fontFamily = localStorage.getItem('font'); document.getElementById('fontSelect').value = localStorage.getItem('font'); }
-  if (localStorage.getItem('fontSize')) { content.style.fontSize = localStorage.getItem('fontSize') + 'px'; document.getElementById('fontSize').value = localStorage.getItem('fontSize'); }
-  if (localStorage.getItem('lineHeight')) { content.style.lineHeight = localStorage.getItem('lineHeight'); document.getElementById('lineSpacing').value = localStorage.getItem('lineHeight'); }
-  if (localStorage.getItem('textColor')) { content.style.color = localStorage.getItem('textColor'); document.getElementById('textColor').value = localStorage.getItem('textColor'); }
-  if (localStorage.getItem('bgColor')) { document.body.style.backgroundColor = localStorage.getItem('bgColor'); document.getElementById('bgColor').value = localStorage.getItem('bgColor'); }
-});
-</script>
+  <footer>Powered by Howard Forge Press</footer>
 </body>
 </html>
