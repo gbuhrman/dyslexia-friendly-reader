@@ -352,7 +352,7 @@ function detectChapters(){
   }
 
   // ---------- Library / OPDS ----------
-  async function loadCatalogJSON(url="./catalog.json") {
+  async function loadCatalogJSON(url="https://howardforgepress.com/Dylexia-friendly-tools/catalog.json") {
     const res = await fetch(url, {cache:'no-cache'});
     if (!res.ok) throw new Error(`Failed to fetch ${url}`);
     return res.json();
