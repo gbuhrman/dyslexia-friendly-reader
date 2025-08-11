@@ -496,7 +496,18 @@ function detectChapters(){
 
     // Library
     try {
-      const cat = await loadCatalogJSON("./catalog.json");
+      const res = await fetch("https://howardforgepress.com/Dylexia-friendly-tools/catalog.json", {cache:'no-cache'});
+       if (!res.ok) throw new Error(`Failed to fetch ${url}`);
+      const data = await res.json();
+      console.log('Catalog loaded successfully:', data);
+      return data;
+    } catch (e) {
+      console.error('Error loading catalog:', e);
+      libStatus.textContent = "(catalog.json not found)";
+    }
+
+    try {
+      const cat = await loadCatalogJSON("https://howardforgepress.com/Dylexia-friendly-tools/catalog.json");
       renderLibrary(filterAndSortBooks(cat.books || []));
     } catch (e) {
       libStatus.textContent = "(catalog.json not found)";
@@ -504,7 +515,7 @@ function detectChapters(){
 
     [libSearch, libGenre, libSort].forEach(el => el && el.addEventListener('input', async () => {
       try {
-        const cat = await loadCatalogJSON("./catalog.json");
+        const cat = await loadCatalogJSON("https://howardforgepress.com/Dylexia-friendly-tools/catalog.json");
         renderLibrary(filterAndSortBooks(cat.books || []));
       } catch {}
     }));

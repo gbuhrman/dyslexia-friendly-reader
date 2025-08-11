@@ -15,6 +15,34 @@ const APP_SHELL = [
   "./fonts/OpenDyslexic-Italic.woff2"
 ];
 
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  
+  // Bypass cache for catalog.json
+  if (req.url.includes('catalog.json')) {
+    event.respondWith(fetch(req));  // Always fetch the latest catalog.json from the network
+    return;
+  }
+
+  // Cache-first for same-origin GET requests; falls back to network for others
+  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(req);
+    if (cached) return cached;
+
+    try {
+      const fresh = await fetch(req);
+      if (fresh && fresh.ok) cache.put(req, fresh.clone());
+      return fresh;
+    } catch (err) {
+      return cached || new Response('Offline', { status: 503, statusText: 'Offline' });
+    }
+  })());
+});
+
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
