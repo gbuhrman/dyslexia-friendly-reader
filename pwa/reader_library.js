@@ -6,7 +6,7 @@
   const libList = document.getElementById('libList');
 
   // Load catalog.json from GitHub Pages
-  async function loadCatalogJSON(url = "https://gbuhrman.github.io/dyslexia-friendly-reader/pwa/catalog.json") {
+  async function loadCatalogJSON(url = "./catalog.json") {
     try {
       const res = await fetch(url, { cache: 'no-cache' });
       if (!res.ok) throw new Error(`Failed to fetch ${url}`);
