@@ -352,7 +352,7 @@ function detectChapters(){
   }
 
   // ---------- Library / OPDS ----------
-  async function loadCatalogJSON(url="https://howardforgepress.com/Dylexia-friendly-tools/catalog.json") {
+  async function loadCatalogJSON(url="https://gbuhrman.github.io/dyslexia-friendly-reader/catalog.json") {
     const res = await fetch(url, {cache:'no-cache'});
     if (!res.ok) throw new Error(`Failed to fetch ${url}`);
     return res.json();
@@ -496,7 +496,7 @@ function detectChapters(){
 
     // Library
     try {
-      const res = await fetch("https://howardforgepress.com/Dylexia-friendly-tools/catalog.json", {cache:'no-cache'});
+      const res = await fetch("https://gbuhrman.github.io/dyslexia-friendly-reader/catalog.json", {cache:'no-cache'});
        if (!res.ok) throw new Error(`Failed to fetch ${url}`);
       const data = await res.json();
       console.log('Catalog loaded successfully:', data);
@@ -507,7 +507,7 @@ function detectChapters(){
     }
 
     try {
-      const cat = await loadCatalogJSON("https://howardforgepress.com/Dylexia-friendly-tools/catalog.json");
+      const cat = await loadCatalogJSON("https://gbuhrman.github.io/dyslexia-friendly-reader/catalog.json");
       renderLibrary(filterAndSortBooks(cat.books || []));
     } catch (e) {
       libStatus.textContent = "(catalog.json not found)";
@@ -515,7 +515,7 @@ function detectChapters(){
 
     [libSearch, libGenre, libSort].forEach(el => el && el.addEventListener('input', async () => {
       try {
-        const cat = await loadCatalogJSON("https://howardforgepress.com/Dylexia-friendly-tools/catalog.json");
+        const cat = await loadCatalogJSON("https://gbuhrman.github.io/dyslexia-friendly-reader/catalog.json");
         renderLibrary(filterAndSortBooks(cat.books || []));
       } catch {}
     }));
