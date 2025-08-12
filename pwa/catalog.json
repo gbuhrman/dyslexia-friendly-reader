@@ -6,7 +6,7 @@
       "id": "PG17396",
       "title": "The Secret Garden",
       "author": "Burnett, Frances Hodgson",
-      "download": "https://gbuhrman.github.io/dyslexia-friendly-reader/pwa/books/pg17396.txt",
+      "download": "https://gbuhrman.github.io/dyslexia-friendly-reader/books/pg17396.txt",
       "Dialogue %": 52.8,
       "Lexical Diversity":0.32
       "df_score": 52.9,
@@ -20,7 +20,7 @@
       "id": "PG863",
       "title": "The Mysterious Affair at Styles",
       "author": "Christie, Agatha",
-      "download": "https://gbuhrman.github.io/dylexia-friendly-reader/pwa/books/pg863.txt",
+      "download": "https://gbuhrman.github.io/dylexia-friendly-reader/books/pg863.txt",
       "dialogue %": 58.0,
       "lexical diversity": 0.26,
       "df_score": 54.03,
@@ -33,7 +33,7 @@
       "id": "PG174",
       "title": "The Picture of Dorian Gray",
       "author": "Wilde, Oscar",
-      "download": "https://gbuhrman.github.io/dyslexia-friendly-reader/pwa/books/pg174.txt", 
+      "download": "https://gbuhrman.github.io/dyslexia-friendly-reader/books/pg174.txt", 
       "dialogue %": 50.0,
       "lexical diversity": 0.28,
       "df_score": 54.7,
@@ -46,7 +46,7 @@
       "id": "PG2097",
       "title": "The Sign of the Four",
       "author": "Doyle, Arthur Conan",
-      "download": "https://gbuhrman.github.io/dyslexia-friendly-reader/pwa/books/pg2097.txt",
+      "download": "https://gbuhrman.github.io/dyslexia-friendly-reader/books/pg2097.txt",
       "dialogue %": 55.3,
       "lexical diversity": 0.31,
       "df_score": 50.5,
@@ -56,4 +56,3 @@
     }
   ]
 }
-
