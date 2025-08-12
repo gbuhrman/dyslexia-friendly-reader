@@ -1,0 +1,5 @@
+Chapter 1
+Another sample text for testing. Lots of dialogue helps readability.
+
+Chapter 2
+He said, "Hello!" She replied, "Hi." The end.
