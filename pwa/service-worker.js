@@ -1,4 +1,3 @@
-/* service-worker.js — cache-first app shell (generated 2025-08-10T22:20:22.551904Z) */
 const CACHE_VERSION = 'v1-1754864422';
 const CACHE_NAME = 'dfr-cache-' + CACHE_VERSION;
 
@@ -14,34 +13,6 @@ const APP_SHELL = [
   "./fonts/OpenDyslexic-Bold.woff2",
   "./fonts/OpenDyslexic-Italic.woff2"
 ];
-
-self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  
-  // Bypass cache for catalog.json
-  if (req.url.includes('catalog.json')) {
-    event.respondWith(fetch(req));  // Always fetch the latest catalog.json from the network
-    return;
-  }
-
-  // Cache-first for same-origin GET requests; falls back to network for others
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
-
-  event.respondWith((async () => {
-    const cache = await caches.open(CACHE_NAME);
-    const cached = await cache.match(req);
-    if (cached) return cached;
-
-    try {
-      const fresh = await fetch(req);
-      if (fresh && fresh.ok) cache.put(req, fresh.clone());
-      return fresh;
-    } catch (err) {
-      return cached || new Response('Offline', { status: 503, statusText: 'Offline' });
-    }
-  })());
-});
-
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -65,19 +36,55 @@ self.addEventListener('activate', (event) => {
 /* Cache-first for same-origin GET requests; falls back to network. */
 self.addEventListener('fetch', (event) => {
   const req = event.request;
+
+  // Check if the request is for the same origin (our domain) and is a GET request
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
 
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
     const cached = await cache.match(req);
-    if (cached) return cached;
 
+    // If cached version exists, return it
+    if (cached) {
+      // If it's catalog.json, we fetch it fresh
+      if (req.url.includes('catalog.json')) {
+        try {
+          const fresh = await fetch(req);
+          if (fresh && fresh.ok) {
+            cache.put(req, fresh.clone());
+          }
+          return fresh;
+        } catch (err) {
+          return cached;  // If the fetch fails, return the cached version
+        }
+      }
+      return cached;
+    }
+
+    // If no cache match, fetch from network
     try {
       const fresh = await fetch(req);
-      if (fresh && fresh.ok) cache.put(req, fresh.clone());
+      if (fresh && fresh.ok) {
+        cache.put(req, fresh.clone());
+      }
       return fresh;
     } catch (err) {
       return cached || new Response('Offline', { status: 503, statusText: 'Offline' });
     }
   })());
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
