@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Functionality Test</title>
+  <link rel="stylesheet" href="reader.css"> <!-- Assuming you still need the styling -->
+</head>
+<body>
+  <div id="controls">
+    <h2>Library Controls</h2>
+    <input id="libSearch" type="search" placeholder="Search title or author" aria-label="Search">
+    <select id="libGenreFilter" aria-label="Filter by genre">
+      <option value="">All genres</option>
+    </select>
+    <select id="libSort" aria-label="Sort by">
+      <option value="title">Sort: Title</option>
+      <option value="author">Sort: Author</option>
+      <option value="fk">Sort: FK Grade</option>
+      <option value="df">Sort: DF Score</option>
+    </select>
+    <button id="libRefreshBtn" type="button">Refresh</button>
+  </div>
+
+  <div id="content">
+    <h1>Library</h1>
+    <div id="libStatus"></div>
+    <ul id="libList"></ul>
+  </div>
+
+  <footer>Powered by Howard Forge Press</footer>
+
+  <!-- Load reader_library.js (library functionality only) -->
+  <script src="reader_library.js" defer></script>
+</body>
+</html>
