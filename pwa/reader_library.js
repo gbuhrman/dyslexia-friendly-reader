@@ -6,18 +6,20 @@
   const libList = document.getElementById('libList');
 
   // Load catalog.json from GitHub Pages
-  async function loadCatalogJSON(url = "./catalog.json") {
-    try {
-      const res = await fetch(url, { cache: 'no-cache' });
-      if (!res.ok) throw new Error(`Failed to fetch ${url}`);
-      const data = await res.json();
-      console.log('Catalog loaded successfully:', data);  // Log loaded catalog data for inspection
-      return data;
-    } catch (e) {
-      console.error('Error loading catalog:', e);
-      libStatus.textContent = "(catalog.json not found)";
-    }
+async function loadCatalogJSON(url = "./catalog.json") {
+  try {
+    const res = await fetch(url, { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`Failed to fetch ${url}`);
+    const data = await res.json();
+    console.log('Catalog loaded successfully:', data);  // Log loaded catalog data for inspection
+    return data;
+  } catch (e) {
+    console.error('Error loading catalog:', e);
+    libStatus.textContent = "(catalog.json not found anywhere)";
   }
+}
+  
+ 
 
   // Render the library based on catalog data
   function renderLibrary(books) {
