@@ -229,3 +229,58 @@ footer {
 
 .word{cursor:pointer}
 .word.current{outline:1px solid;}
+/* ---------- Reading Mode / Mobile optimizations ---------- */
+
+/* Use a dynamic offset rather than a hard-coded 300px */
+:root { --controls-offset: 300px; } /* JS will overwrite this after measuring */
+#content { margin-top: var(--controls-offset); }
+
+/* On small screens, reduce header bulk and allow horizontal scroll of controls */
+@media (max-width: 768px) {
+  #controls {
+    position: sticky;           /* no longer fixed on mobile; sticks at top when shown */
+    top: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 6px;
+    gap: 6px;
+  }
+  #content { margin-top: 0; }   /* we’ll compute exact offset with JS below */
+}
+
+/* Reading Mode: hide chrome and let content fill the screen */
+body.reading #controls,
+body.reading footer,
+body.reading .voice-test,
+body.reading #libraryPanel,
+body.reading #epubPanel {
+  display: none !important;
+}
+
+/* Fill the available viewport height (iOS-friendly 100dvh) */
+body.reading #content {
+  margin-top: 0 !important;
+  padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom);
+  min-height: 100dvh;
+}
+
+/* Tiny floating “Aa” button to re-open controls while in Reading Mode */
+.fab {
+  position: fixed;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  z-index: 2000;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  padding: 10px 12px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Optional: autohide header when scrolling down (non-reading mode) */
+body.hide-controls #controls {
+  transform: translateY(-100%);
+  transition: transform .25s ease;
+}
