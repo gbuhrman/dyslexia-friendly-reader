@@ -7,5 +7,8 @@
   "background_color": "#f8f8f8",
   "theme_color": "#f8f8f8",
   "description": "Local text reader with dyslexia-friendly controls and read-aloud.",
-  "icons": []
+  "icons": [
+    { "src": "./icons/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
 }
