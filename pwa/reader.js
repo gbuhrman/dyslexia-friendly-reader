@@ -22,6 +22,23 @@ function tokenIndexFromScroll(total) {
   const pct = Math.min(1, Math.max(0, scrollTop / Math.max(1, scrollHeight - window.innerHeight)));
   return Math.floor(pct * (total || 0));
 }
+// ---- Layout helpers for header size & reading mode ----
+function setControlsOffset() {
+  const controls = document.getElementById('controls');
+  const root = document.documentElement;
+  const offset = document.body.classList.contains('reading') ? 0 : (controls ? controls.offsetHeight : 0);
+  root.style.setProperty('--controls-offset', offset + 'px');
+}
+
+let _lastY = 0;
+function handleScrollAutohide() {
+  const y = window.scrollY || 0;
+  const goingDown = y > _lastY + 6;
+  const goingUp   = y < _lastY - 6;
+  if (goingDown) document.body.classList.add('hide-controls');
+  else if (goingUp) document.body.classList.remove('hide-controls');
+  _lastY = y;
+}
 
   
 
@@ -76,6 +93,40 @@ function tokenIndexFromScroll(total) {
   const chapterSelect = $('chapterSelect');
   const bookmarkBtn = document.getElementById('bookmarkBtn');
   const gotoBookmarkBtn = document.getElementById('gotoBookmarkBtn');
+  const toggleReadingBtn = document.getElementById('toggleReadingBtn');
+  const quickControlsBtn = document.getElementById('quickControlsBtn');
+
+function enterReadingMode() {
+  document.body.classList.add('reading');
+  if (quickControlsBtn) quickControlsBtn.hidden = false;
+  setControlsOffset();
+  setTimeout(() => window.scrollTo(0, 0), 0); // iOS sizing nudge
+}
+function exitReadingMode() {
+  document.body.classList.remove('reading');
+  if (quickControlsBtn) quickControlsBtn.hidden = true;
+  setControlsOffset();
+}
+
+if (toggleReadingBtn) {
+  toggleReadingBtn.addEventListener('click', () => {
+    const on = !document.body.classList.contains('reading');
+    toggleReadingBtn.setAttribute('aria-pressed', String(on));
+    on ? enterReadingMode() : exitReadingMode();
+  });
+}
+if (quickControlsBtn) {
+  quickControlsBtn.addEventListener('click', () => { exitReadingMode(); });
+}
+
+setControlsOffset();
+window.addEventListener('resize', setControlsOffset);
+window.addEventListener('orientationchange', setControlsOffset);
+
+// Optional: auto-hide header when scrolling (non-reading mode)
+window.addEventListener('scroll', () => {
+  if (!document.body.classList.contains('reading')) handleScrollAutohide();
+});
 
   if (bookmarkBtn) bookmarkBtn.addEventListener('click', () => {
   const tokens = getAllTokens();
