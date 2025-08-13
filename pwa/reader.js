@@ -144,16 +144,7 @@ window.addEventListener('scroll', () => {
   
   
 
-  const libPanel = $('libraryPanel');
-  const libSearch = $('libSearch');
-  const libGenre = $('libGenreFilter');
-  const libSort = $('libSort');
-  const libRefreshBtn = $('libRefreshBtn');
-  const opdsSourceSelect = $('opdsSourceSelect');
-  const opdsCustomUrl = $('opdsCustomUrl');
-  const opdsLoadBtn = $('opdsLoadBtn');
-  const libStatus = $('libStatus');
-  const libList = $('libList');
+ 
 
   // ---------- Appearance Controls ----------
   const fontSelect = $('fontSelect');
@@ -402,63 +393,6 @@ function detectChapters(){
     currentSpokenIndex = -1;
   }
 
-  // ---------- Library / OPDS ----------
-  async function loadCatalogJSON(url="https://gbuhrman.github.io/dyslexia-friendly-reader/catalog.json") {
-    const res = await fetch(url, {cache:'no-cache'});
-    if (!res.ok) throw new Error(`Failed to fetch ${url}`);
-    return res.json();
-  }
-
-  function renderLibrary(books) {
-    libList.innerHTML = "";
-    if (!Array.isArray(books) || !books.length) {
-      libStatus.textContent = "No books found.";
-      return;
-    }
-    libStatus.textContent = `Showing ${books.length} book(s).`;
-    books.forEach(b => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <div class="card">
-          <div class="meta"><strong>${escapeHtml(b.title || '')}</strong> — ${escapeHtml(b.author || '')}</div>
-          <div class="actions">
-            ${b.download ? `<button class="open-text" data-url="${escapeHtml(b.download)}">Open</button>` : ''}
-            ${b.epub ? `<button class="open-epub" data-url="${escapeHtml(b.epub)}">Open EPUB</button>` : ''}
-          </div>
-        </div>`;
-      libList.appendChild(li);
-    });
-  }
-
-  async function loadOPDSIndex(url) {
-    const res = await fetch(url, {cache:'no-cache'});
-    if (!res.ok) throw new Error(`OPDS fetch failed: ${url}`);
-    return res.json();
-  }
-
-  async function loadOPDSPublications(url) {
-    const data = await loadOPDSIndex(url);
-    return data.publications || [];
-  }
-
-  function filterAndSortBooks(books) {
-    const term = (libSearch.value || "").toLowerCase();
-    const genre = libGenre.value || "";
-    const sort = libSort.value || "title";
-    let out = books.filter(b => {
-      const t = (b.title||"").toLowerCase();
-      const a = (b.author||"").toLowerCase();
-      const g = (Array.isArray(b.genres)? b.genres.join(" ").toLowerCase() : "");
-      const okTerm = !term || t.includes(term) || a.includes(term);
-      const okGenre = !genre || g.includes(genre.toLowerCase());
-      return okTerm && okGenre;
-    });
-    out.sort((x,y) => {
-      const ax = (x[sort]||"")+"", ay = (y[sort]||"")+"";
-      return ax.localeCompare(ay, undefined, {numeric: true, sensitivity:'base'});
-    });
-    return out;
-  }
 
   // ---------- EPUB ----------
   function openEpub(url) {
@@ -545,75 +479,11 @@ function detectChapters(){
       if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
     });
 
-    // Library
-    try {
-      const res = await fetch("https://gbuhrman.github.io/dyslexia-friendly-reader/catalog.json", {cache:'no-cache'});
-       if (!res.ok) throw new Error(`Failed to fetch ${url}`);
-      const data = await res.json();
-      console.log('Catalog loaded successfully:', data);
-      return data;
-    } catch (e) {
-      console.error('Error loading catalog:', e);
-      libStatus.textContent = "(catalog.json not found)";
-    }
-
-    try {
-      const cat = await loadCatalogJSON("https://gbuhrman.github.io/dyslexia-friendly-reader/catalog.json");
-      renderLibrary(filterAndSortBooks(cat.books || []));
-    } catch (e) {
-      libStatus.textContent = "(catalog.json not found)";
-    }
-
-    [libSearch, libGenre, libSort].forEach(el => el && el.addEventListener('input', async () => {
-      try {
-        const cat = await loadCatalogJSON("https://gbuhrman.github.io/dyslexia-friendly-reader/catalog.json");
-        renderLibrary(filterAndSortBooks(cat.books || []));
-      } catch {}
-    }));
-
-    libList.addEventListener('click', async (e) => {
-      const t = e.target;
-      if (t.matches('.open-text')) {
-        const url = t.getAttribute('data-url');
-        const res = await fetch(url);
-        const txt = await res.text();
-        storyEl.innerHTML = autoformatToggle.checked ? autoFormatText(txt) : `<pre>${escapeHtml(txt)}</pre>`;
-        applyPrefs();
-      applyPrefs();
-        wrapWords(); promoteChapterHeadings();
-        detectChapters();
-
-        window.scrollTo({top: 0, behavior:'smooth'});
-      } else if (t.matches('.open-epub')) {
-        openEpub(t.getAttribute('data-url'));
-      }
-    });
-
-    opdsLoadBtn.addEventListener('click', async () => {
-      const custom = opdsCustomUrl.value.trim();
-      const url = custom || opdsSourceSelect.value;
-      try {
-        libStatus.textContent = "Loading OPDS…";
-        const pubs = await loadOPDSPublications(url);
-        // Normalize to books array
-        const books = pubs.map(p => ({
-          id: (p.metadata && (p.metadata.identifier || p.metadata.id)) || "",
-          title: p.metadata && p.metadata.title || "",
-          author: p.metadata && (p.metadata.author || p.metadata.authors && p.metadata.authors[0] && p.metadata.authors[0].name) || "",
-          download: p.links && p.links.find(l => /plain|text/.test(l.type || '')) && p.links.find(l => /plain|text/.test(l.type)).href || "",
-          epub: p.links && p.links.find(l => /epub/.test(l.type || '')) && p.links.find(l => /epub/.test(l.type)).href || ""
-        }));
-        renderLibrary(filterAndSortBooks(books));
-        libStatus.textContent = `Loaded ${books.length} from OPDS.`;
-      } catch (err) {
-        libStatus.textContent = "OPDS load failed.";
-        console.error(err);
-      }
-    });
 
     // Service worker (guarded)
-    /* DEV: service worker disabled */ if (false) {
-      try { navigator.serviceWorker.register('service-worker.js'); } catch (e) {}
-    }
+    if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').catch(() => {});
+}
+
   });
 })();

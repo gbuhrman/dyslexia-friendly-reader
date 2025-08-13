@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self';
+  style-src 'self';
+  img-src 'self' data:;
+  font-src 'self';
+  connect-src 'self' https://api.dictionaryapi.dev;
+  manifest-src 'self';
+  base-uri 'none';
+  form-action 'none';
+  frame-ancestors 'none';
+">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dyslexia-Friendly Reader (Bookmark Fix + Holistic Speech)</title>
@@ -8,6 +20,8 @@
   <link rel="stylesheet" href="reader.css">
   <script src="vendor/epub/epub.min.js" defer></script>
   <script src="reader.js" defer></script>
+  
+
 </head>
 <body>
   <div id="controls">
@@ -37,7 +51,7 @@
     <label>Chapter: <select id="chapterSelect"><option value="">--Select--</option></select></label>
     <button id="bookmarkBtn">Bookmark</button>
     <button id="gotoBookmarkBtn">Go to Bookmark</button>
-    <button id="toggleReadingBtn" type="button" aria-pressed="false" title="Toggle Reading Mode">Reading Mode</button>
+    
 
   </div>
 
@@ -60,35 +74,6 @@
       Designed by Sir John Vanbrugh, its baroque splendor was unmatched. The estate contained vast gardens with classical statues, cascading fountains, and hedges stretching toward the River Derwent. It was a world of refinement and excess, where every corner whispered of the family's legacy, a legacy that William Howard, the grandson of Lord Charles, would one day squander.
     </div>
     <div id="definitionPopup" role="status" aria-live="polite"></div>
-    
-<section id="libraryPanel" aria-label="Library and OPDS" style="margin-top:1rem;">
-  <h2>Library</h2>
-  <div class="lib-controls" style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0;">
-    <input id="libSearch" type="search" placeholder="Search title or author" aria-label="Search">
-    <select id="libGenreFilter" aria-label="Filter by genre">
-      <option value="">All genres</option>
-    </select>
-    <select id="libSort" aria-label="Sort by">
-      <option value="title">Sort: Title</option>
-      <option value="author">Sort: Author</option>
-      <option value="fk">Sort: FK Grade</option>
-      <option value="df">Sort: DF Score</option>
-    </select>
-    <button id="libRefreshBtn" type="button">Refresh</button>
-  </div>
-
-  <div class="opds-controls" style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0;">
-    <select id="opdsSourceSelect" aria-label="OPDS source">
-      <option value="./opds/index.json" selected>Local OPDS (bundled)</option>
-    </select>
-    <input id="opdsCustomUrl" type="url" placeholder="https://example.com/opds/index.json" aria-label="Custom OPDS URL" style="min-width:20rem;">
-    <button id="opdsLoadBtn" type="button">Load OPDS</button>
-  </div>
-
-  <div id="libStatus" style="margin:.25rem 0;"></div>
-  <ul id="libList" style="list-style:none;padding:0;margin:0;display:grid;gap:.5rem;"></ul>
-</section>
-
   </div>
 <button id="quickControlsBtn" class="fab" type="button" hidden aria-label="Show controls">Aa</button>
 
