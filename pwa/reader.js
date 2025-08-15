@@ -4,7 +4,60 @@
 */
 (() => {
   'use strict';
+  // Reader import handoff
+(function (){
+  const STORAGE_KEY = 'reader:import';
+  const channelName = 'reader';
 
+  async function consumeImport(payload) {
+  const STORAGE_KEY = 'reader:import';
+  try {
+    const deliver = async () => {
+      if (window.reader && typeof window.reader.loadText === 'function') {
+        await window.reader.loadText(payload.text, payload.name, payload.meta || {});
+        return true;
+      } else if (window.reader && typeof window.reader.openFile === 'function') {
+        const file = new File([payload.text], payload.name || 'import.txt', { type: 'text/plain' });
+        await window.reader.openFile(file, payload.meta || {});
+        return true;
+      }
+      return false;
+    };
+    let ok = await deliver();
+    if (!ok) {
+      if (document.readyState === 'loading') {
+        await new Promise(res => document.addEventListener('DOMContentLoaded', res, { once: true }));
+      }
+      ok = await deliver();
+    }
+    if (ok) {
+      try { localStorage.removeItem(STORAGE_KEY); } catch {}
+      if (location.hash === '#import') history.replaceState(null, '', location.pathname + location.search);
+    } else {
+      alert('Reader integration missing: implement reader.loadText(text, name, meta) or reader.openFile(file).');
+    }
+  } catch (e) {
+    console.error('Import error:', e);
+  }
+}
+
+  // 1) On page load + #import: pull from localStorage
+  if (location.hash === '#import') {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) { const p = JSON.parse(raw); console.debug('[Reader] Import payload received', {name:p?.name, id:p?.id}); consumeImport(p);}
+    } catch (e) { console.error('Import error:', e); }
+  }
+
+  // 2) Live handoff (if opened in another tab)
+  try {
+    const bc = new BroadcastChannel(channelName);
+    bc.onmessage = (ev) => {
+      if (ev?.data?.type === 'ping') { try { ev.target.postMessage({ type:'pong', from:'reader' }); } catch {} return; }
+      if (ev?.data?.type === 'import' && ev.data.payload) consumeImport(ev.data.payload);
+    };
+  } catch { /* BroadcastChannel not supported—no problem */ }
+})();
   // ---------- Utils ----------
   const $ = (id) => document.getElementById(id);
   const bySel = (s, el=document) => el.querySelector(s);
@@ -95,6 +148,40 @@ function handleScrollAutohide() {
   const gotoBookmarkBtn = document.getElementById('gotoBookmarkBtn');
   const toggleReadingBtn = document.getElementById('toggleReadingBtn');
   const quickControlsBtn = document.getElementById('quickControlsBtn');
+
+// === Reader import adapter (from Catalog Loader) ===
+// Exposes loadText(text, name, meta) and openFile(file, meta)
+// so the import handoff can display content immediately.
+window.reader = window.reader || {};
+
+window.reader.loadText = async function loadText(text, name, meta = {}) {
+  if (!storyEl) return;
+
+  // Use the same formatting logic as your file upload handler
+  const useAuto = (autoformatToggle && autoformatToggle.checked) !== false; // default true if toggle missing
+  storyEl.innerHTML = useAuto
+    ? autoFormatText(text)
+    : `<pre>${(text || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}</pre>`;
+
+  // Apply UI prefs and prep reading features
+  applyPrefs();
+  wrapWords();
+  promoteChapterHeadings();
+  detectChapters();
+
+  // Optional niceties
+  if (meta && meta.title) {
+    try { document.title = `${meta.title} — Dyslexia-Friendly Reader`; } catch {}
+  }
+  // If you want to auto-enter Reading Mode, uncomment:
+  // if (toggleReadingBtn && !document.body.classList.contains('reading')) toggleReadingBtn.click();
+};
+
+window.reader.openFile = async function openFile(file, meta = {}) {
+  const text = await file.text();
+  return window.reader.loadText(text, file.name || 'import.txt', meta);
+};
+
 
 function enterReadingMode() {
   document.body.classList.add('reading');

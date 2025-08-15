@@ -7,14 +7,13 @@
       "title": "The Secret Garden",
       "author": "Burnett, Frances Hodgson",
       "download": "./books/pg17396.txt",
-      "Dialogue %": 52.8,
-      "Lexical Diversity":0.32
+      "dialogue %": 52.8,
+      "lexical diversity": 0.32,
       "df_score": 52.9,
       "fk_grade": 6.5,
       "genres": [
         "Children's Literature"
-      ],
-      
+      ]
     },
     {
       "id": "PG863",
@@ -27,20 +26,21 @@
       "fk_grade": 7.3,
       "genres": [
         "Detective & Mystery"
-      ],
-    }
+      ]
+    },
     {
       "id": "PG174",
       "title": "The Picture of Dorian Gray",
       "author": "Wilde, Oscar",
-      "download": "./books/pg174.txt", 
+      "download": "./books/pg174.txt",
       "dialogue %": 50.0,
       "lexical diversity": 0.28,
       "df_score": 54.7,
       "fk_grade": 6.9,
-      "genres": ["Didactic Fiction", "Gothic"],
-      
-      
+      "genres": [
+        "Didactic Fiction",
+        "Gothic"
+      ]
     },
     {
       "id": "PG2097",
@@ -50,9 +50,10 @@
       "dialogue %": 55.3,
       "lexical diversity": 0.31,
       "df_score": 50.5,
-      "fk_grade": 7.8, 
-      "genres": ["Detective & Mystery"],
-
+      "fk_grade": 7.8,
+      "genres": [
+        "Detective & Mystery"
+      ]
     }
   ]
 }

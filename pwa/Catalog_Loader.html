@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Catalog → Reader</title>
+  <style>
+    :root { --gap: 12px; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body { margin: 0; background:#0b1020; color:#eef2ff; }
+    header { padding: 20px clamp(12px, 3vw, 28px); display:flex; gap:var(--gap); align-items:center; border-bottom:1px solid #1b2340; position:sticky; top:0; background:#0b1020; z-index:1; }
+    header h1 { margin:0; font-size: clamp(18px, 3vw, 22px); font-weight:700; letter-spacing:0.3px; }
+    header input[type="search"]{ flex:1; padding:12px 14px; border-radius:12px; border:1px solid #2a335a; background:#0f1630; color:#e6ebff; }
+    header input::placeholder{ color:#94a3b8; }
+    main { padding: 14px clamp(12px, 3vw, 28px) 32px; }
+    .toolbar { display:flex; gap:var(--gap); align-items:center; margin: 8px 0 16px; }
+    .pill { font-size:12px; padding:6px 10px; border-radius:999px; background:#132046; border:1px solid #1f2a57; color:#cbd5e1; }
+    .grid { display:grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 760px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1100px){ .grid{ grid-template-columns: repeat(3, 1fr); } }
+    .card { background:#0f1630; border:1px solid #1f2a57; border-radius:16px; overflow:hidden; display:flex; flex-direction:column; }
+    .card .content{ padding:14px; display:grid; grid-template-columns: 1fr auto; column-gap: 12px; row-gap: 6px; }
+    .title { font-weight:700; font-size: 16px; grid-column: 1 / -1; }
+    .meta { font-size: 13px; color:#a5b4fc; }
+    .genres { grid-column: 1 / -1; display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+    .genres .chip{ font-size:11px; padding:4px 8px; border-radius:999px; background:#0b1020; border:1px solid #263163; color:#c7d2fe; }
+    .nums { display:flex; gap:10px; flex-wrap:wrap; align-items:center; color:#cbd5e1; font-size:12px; }
+    .nums b{ color:#e2e8f0; }
+    .actions{ display:flex; gap:8px; padding: 10px 14px 14px; }
+    button { cursor:pointer; background:#1e40af; color:white; border:none; border-radius:12px; padding:10px 12px; font-weight:600; }
+    button.secondary{ background:#0b1020; color:#e2e8f0; border:1px solid #263163; }
+    .empty{ opacity:0.7; text-align:center; padding:40px 12px; }
+    .footer-note{ margin-top: 14px; font-size:12px; color:#94a3b8; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Catalog → Reader</h1>
+    <input id="q" type="search" placeholder="Search title, author, id, genre…" />
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <span class="pill" id="count">0 titles</span>
+      <span class="pill" id="filters"></span>
+    </div>
+    <div id="errors"></div>
+    <section id="results" class="grid" role="list"></section>
+    <div class="empty" id="empty" hidden>Nothing matched your search. Try a different term.</div>
+    <p class="footer-note">This page will keep running while it sends books to the Reader. If a Reader is already open, it will reuse it; otherwise it opens (or reuses) a separate Reader window.</p>
+  </main>
+
+  <script>
+  const $ = (sel, el=document) => el.querySelector(sel);
+
+  const CATALOG_URL = './catalog.json'; // adjust if needed
+  const READER_URL = './index.html';    // your reader entry
+  const STORAGE_KEY = 'reader:import';  // localStorage key used to pass the text payload
+  const CHANNEL = 'reader';             // BroadcastChannel name
+  const READER_WINDOW_NAME = 'HFPReader'; // reuse the same named window/tab
+
+  async function loadCatalog(){
+    const errBox = document.getElementById('errors'); errBox.innerHTML = '';
+    try{
+      const res = await fetch(CATALOG_URL, { cache:'no-store' });
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); }
+      catch(parseErr){
+        const pre = document.createElement('pre');
+        pre.textContent = text.slice(0, 1200);
+        errBox.innerHTML = '<div class="error"><strong>catalog.json is not valid JSON.</strong><br/>' +
+          'Fix trailing/missing commas, and ensure keys are quoted. See preview below.\n' +
+          '\nError: ' + parseErr.message + '</div>';
+        errBox.appendChild(pre);
+        throw parseErr;
+      }
+      const books = (data && Array.isArray(data.books)) ? data.books : [];
+      render(books);
+    }catch(e){ console.error(e); }
+  }
+
+  function render(books){
+    const list = document.getElementById('results');
+    list.innerHTML = '';
+    const q = document.getElementById('q').value.trim().toLowerCase();
+    const filtered = books.filter(b => {
+      const genres = Array.isArray(b.genres) ? b.genres : [];
+      const hay = [b.title, b.author, b.id, ...genres].join(' ').toLowerCase();
+      return q ? hay.includes(q) : true;
+    });
+    document.getElementById('count').textContent = filtered.length + ' title' + (filtered.length===1?'':'s');
+    document.getElementById('empty').hidden = !!filtered.length;
+
+    for (const b of filtered){
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="content">
+          <div class="title">${escapeHTML(b.title || 'Untitled')}</div>
+          <div class="meta">${escapeHTML(b.author || 'Unknown')}</div>
+          <div class="meta">${escapeHTML(b.id || '')}</div>
+          <div class="genres">${(b.genres||[]).map(g=>`<span class="chip">${escapeHTML(g)}</span>`).join('')}</div>
+        </div>
+        <div class="actions">
+          <button data-act="open">Open in Reader</button>
+          <a class="secondary" role="button" href="${encodeURI(b.download||'#')}" download>Download .txt</a>
+        </div>`;
+      card.querySelector('button[data-act="open"]').addEventListener('click', ()=> handoffToReader(b));
+      list.appendChild(card);
+    }
+
+    function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]||c)); }
+  }
+
+  async function handoffToReader(book){
+    if (!book || !book.download){ alert('No download path for this title.'); return; }
+    try{
+      const res = await fetch(book.download, { cache:'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+
+      const payload = {
+        kind: 'reader-import',
+        name: makeFileName(book),
+        id: book.id || null,
+        meta: {
+          title: book.title || null,
+          author: book.author || null,
+          dialogue_pct: book['dialogue %'] ?? book['Dialogue %'] ?? null,
+          lexical_diversity: book['lexical diversity'] ?? book['Lexical Diversity'] ?? null,
+          df_score: book.df_score ?? null,
+          fk_grade: book.fk_grade ?? null,
+          genres: Array.isArray(book.genres) ? book.genres : []
+        },
+        text
+      };
+      // Stash payload for a potential new Reader window to pick up
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+
+      // Try to reuse an existing Reader via BroadcastChannel ping/pong
+      let usedExisting = false;
+      try {
+        const bc = new BroadcastChannel(CHANNEL);
+        const timeoutMs = 450;
+        const t0 = Date.now();
+        const onMsg = (ev) => {
+          const d = ev && ev.data;
+          if (d && d.type === 'pong') {
+            usedExisting = true;
+            bc.postMessage({ type:'import', payload });
+            bc.close();
+          }
+        };
+        bc.onmessage = onMsg;
+        // Send ping and wait briefly
+        bc.postMessage({ type:'ping', from:'catalog' });
+        await new Promise(res => setTimeout(res, timeoutMs));
+        if (!usedExisting) bc.close();
+      } catch {}
+
+      if (!usedExisting) {
+        // Open or reuse a named window/tab for the Reader
+        const url = new URL(READER_URL, location.href);
+        url.hash = '#import';
+        const w = window.open(url.toString(), READER_WINDOW_NAME);
+        if (w && typeof w.focus === 'function') w.focus();
+        if (!w) {
+          // popup blocked: last-resort fallback (navigate current tab)
+          location.href = url.toString();
+        }
+      } else {
+        // If an existing reader handled it, keep this tab as-is
+        console.debug('[Catalog] Sent to existing Reader');
+      }
+    }catch(err){
+      console.error(err);
+      alert('Failed to fetch text: ' + err.message);
+    }
+  }
+
+  function makeFileName(b){
+    const t = (b.title||'book').replace(/[^a-z0-9]+/gi,'_').replace(/^_+|_+$/g,'');
+    const a = (b.author||'').split(',')[0]?.trim().replace(/[^a-z0-9]+/gi,'_');
+    const id = (b.id||'').replace(/[^a-z0-9]+/gi,'');
+    return [t, a, id].filter(Boolean).join('_') + '.txt';
+  }
+
+  document.getElementById('q').addEventListener('input', () => {
+    // re-fetch to keep it simple (or keep a cached copy if you like)
+    loadCatalog();
+  });
+
+  loadCatalog();
+  </script>
+</body>
+</html>
