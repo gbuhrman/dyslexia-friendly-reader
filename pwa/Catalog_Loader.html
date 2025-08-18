@@ -3,194 +3,391 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Catalog → Reader</title>
+  <title>Reader Catalog — Genre First</title>
+  <meta name="description" content="Browse dyslexia-friendly titles by genre, then open in the Reader." />
   <style>
-    :root { --gap: 12px; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 0; background:#0b1020; color:#eef2ff; }
-    header { padding: 20px clamp(12px, 3vw, 28px); display:flex; gap:var(--gap); align-items:center; border-bottom:1px solid #1b2340; position:sticky; top:0; background:#0b1020; z-index:1; }
-    header h1 { margin:0; font-size: clamp(18px, 3vw, 22px); font-weight:700; letter-spacing:0.3px; }
-    header input[type="search"]{ flex:1; padding:12px 14px; border-radius:12px; border:1px solid #2a335a; background:#0f1630; color:#e6ebff; }
-    header input::placeholder{ color:#94a3b8; }
-    main { padding: 14px clamp(12px, 3vw, 28px) 32px; }
-    .toolbar { display:flex; gap:var(--gap); align-items:center; margin: 8px 0 16px; }
-    .pill { font-size:12px; padding:6px 10px; border-radius:999px; background:#132046; border:1px solid #1f2a57; color:#cbd5e1; }
-    .grid { display:grid; grid-template-columns: 1fr; gap: 12px; }
+    :root{
+      --bg:#0b1020;
+      --bg2:#0f1630;
+      --line:#1f2a57;
+      --line2:#263163;
+      --fg:#e6ebff;
+      --muted:#94a3b8;
+      --chip:#c7d2fe;
+      --accent:#1e40af;
+      --pill:#132046;
+      --gap: 12px;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.25);
+      --danger:#ef4444;
+      --ok:#22c55e;
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--fg); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    header {
+      position: sticky; top:0; z-index:10;
+      display:flex; align-items:center; gap:12px;
+      padding: 18px clamp(12px,3vw,28px);
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+    }
+    header h1 { margin:0; font-size: clamp(18px,3vw,22px); letter-spacing:.2px; }
+    header .spacer { flex:1; }
+    header .btn { appearance:none; border:none; background:var(--bg2); color:var(--fg); border:1px solid var(--line2); padding:10px 12px; border-radius:12px; cursor:pointer; }
+    main { padding: 16px clamp(12px,3vw,28px) 32px; }
+
+    /* Genres grid */
+    .genres-grid { display:grid; gap:12px; grid-template-columns: 1fr; }
+    @media (min-width: 760px){ .genres-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (min-width: 1100px){ .genres-grid { grid-template-columns: repeat(3,1fr); } }
+    .genre-card { background:var(--bg2); border:1px solid var(--line); padding:16px; border-radius: var(--radius); box-shadow: var(--shadow); cursor:pointer; }
+    .genre-card:hover { border-color:#3351b6; }
+    .genre-title { font-weight: 800; font-size: 18px; margin:0 0 6px 0; }
+    .genre-meta { color:var(--muted); font-size: 13px; }
+    .genre-chips { margin-top:8px; display:flex; gap:8px; flex-wrap: wrap; }
+    .chip { font-size: 12px; padding:6px 10px; border-radius: 999px; background: var(--pill); border:1px solid var(--line2); color: var(--chip); }
+
+    /* Books view */
+    .toolbar { display:flex; align-items:center; gap:10px; margin: 8px 0 16px; flex-wrap:wrap; }
+    .toolbar .back { appearance:none; border:none; background:var(--bg2); color:var(--fg); border:1px solid var(--line2); padding:10px 12px; border-radius:12px; cursor:pointer; }
+    .toolbar input[type="search"] { flex:1; min-width:220px; padding:12px 14px; border-radius:12px; border:1px solid var(--line2); background:#0f1630; color:#e6ebff; }
+    .toolbar .pill { padding:6px 10px; border-radius:999px; background:var(--pill); border:1px solid var(--line2); color:#cbd5e1; font-size:12px; }
+    .grid { display:grid; gap: 12px; grid-template-columns: 1fr; }
     @media (min-width: 760px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 1100px){ .grid{ grid-template-columns: repeat(3, 1fr); } }
-    .card { background:#0f1630; border:1px solid #1f2a57; border-radius:16px; overflow:hidden; display:flex; flex-direction:column; }
+    .card { background:var(--bg2); border:1px solid var(--line); border-radius: var(--radius); overflow:hidden; display:flex; flex-direction:column; }
     .card .content{ padding:14px; display:grid; grid-template-columns: 1fr auto; column-gap: 12px; row-gap: 6px; }
-    .title { font-weight:700; font-size: 16px; grid-column: 1 / -1; }
+    .title { font-weight:800; font-size: 16px; grid-column: 1 / -1; }
     .meta { font-size: 13px; color:#a5b4fc; }
-    .genres { grid-column: 1 / -1; display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
-    .genres .chip{ font-size:11px; padding:4px 8px; border-radius:999px; background:#0b1020; border:1px solid #263163; color:#c7d2fe; }
-    .nums { display:flex; gap:10px; flex-wrap:wrap; align-items:center; color:#cbd5e1; font-size:12px; }
-    .nums b{ color:#e2e8f0; }
+    .metrics { grid-column: 1 / -1; display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+    .metric { font-size:11px; padding:4px 8px; border-radius:8px; background:#09122a; border:1px solid var(--line2); color:#cbd5e1; }
+    .genres-line { grid-column: 1 / -1; display:flex; gap:6px; flex-wrap:wrap; }
     .actions{ display:flex; gap:8px; padding: 10px 14px 14px; }
-    button { cursor:pointer; background:#1e40af; color:white; border:none; border-radius:12px; padding:10px 12px; font-weight:600; }
-    button.secondary{ background:#0b1020; color:#e2e8f0; border:1px solid #263163; }
-    .empty{ opacity:0.7; text-align:center; padding:40px 12px; }
-    .footer-note{ margin-top: 14px; font-size:12px; color:#94a3b8; }
+    button { cursor:pointer; background:var(--accent); color:white; border:none; border-radius:12px; padding:10px 12px; font-weight:700; }
+    a.secondary { text-decoration:none; display:inline-block; background:var(--bg); color:#e2e8f0; border:1px solid var(--line2); border-radius:12px; padding:9px 12px; font-weight:600; }
+    .empty{ opacity:0.75; text-align:center; padding:40px 12px; }
+    .error{ border:1px solid var(--danger); background: #2b1111; color:#fecaca; padding:12px; border-radius:12px; margin:8px 0; }
+    .hint{ color:var(--muted); font-size:12px; margin-top:10px; }
   </style>
 </head>
 <body>
   <header>
-    <h1>Catalog → Reader</h1>
-    <input id="q" type="search" placeholder="Search title, author, id, genre…" />
+    <h1>Reader Catalog</h1>
+    <div class="spacer"></div>
+    <button class="btn" id="showAll">All titles</button>
   </header>
 
   <main>
-    <div class="toolbar">
-      <span class="pill" id="count">0 titles</span>
-      <span class="pill" id="filters"></span>
-    </div>
-    <div id="errors"></div>
-    <section id="results" class="grid" role="list"></section>
-    <div class="empty" id="empty" hidden>Nothing matched your search. Try a different term.</div>
-    <p class="footer-note">This page will keep running while it sends books to the Reader. If a Reader is already open, it will reuse it; otherwise it opens (or reuses) a separate Reader window.</p>
+    <!-- GENRES VIEW -->
+    <section id="view-genres" hidden>
+      <p class="hint">Pick a genre to explore dyslexia‑friendly titles. You can still search and refine once inside a genre.</p>
+      <div id="genresGrid" class="genres-grid" role="list"></div>
+    </section>
+
+    <!-- BOOKS-IN-GENRE VIEW -->
+    <section id="view-books" hidden>
+      <div class="toolbar">
+        <button class="back" id="backBtn" aria-label="Back to genres">← Genres</button>
+        <h2 id="genreHeading" style="margin:0; font-size:18px; font-weight:800;"></h2>
+        <span class="pill" id="countPill">0 titles</span>
+        <div class="spacer"></div>
+        <input id="q" type="search" placeholder="Search in this genre (title, author, id)…" />
+      </div>
+      <div id="errors"></div>
+      <section id="results" class="grid" role="list"></section>
+      <div class="empty" id="empty" hidden>No results in this genre. Try a different search term.</div>
+    </section>
   </main>
 
   <script>
-  const $ = (sel, el=document) => el.querySelector(sel);
+    // --- Configuration (kept consistent with your existing Reader setup) ---
+    const CATALOG_URL = './catalog.json'; // relative to this file
+    const READER_URL  = './index.html';   // your Reader entry point
+    const STORAGE_KEY = 'reader:import';
+    const CHANNEL     = 'reader';
+    const READER_WINDOW_NAME = 'HFPReader';
 
-  const CATALOG_URL = './catalog.json'; // adjust if needed
-  const READER_URL = './index.html';    // your reader entry
-  const STORAGE_KEY = 'reader:import';  // localStorage key used to pass the text payload
-  const CHANNEL = 'reader';             // BroadcastChannel name
-  const READER_WINDOW_NAME = 'HFPReader'; // reuse the same named window/tab
+    // --- State ---
+    let ALL_BOOKS = [];
+    let CURRENT_GENRE = null;
 
-  async function loadCatalog(){
-    const errBox = document.getElementById('errors'); errBox.innerHTML = '';
-    try{
-      const res = await fetch(CATALOG_URL, { cache:'no-store' });
-      const text = await res.text();
-      let data;
-      try { data = JSON.parse(text); }
-      catch(parseErr){
-        const pre = document.createElement('pre');
-        pre.textContent = text.slice(0, 1200);
-        errBox.innerHTML = '<div class="error"><strong>catalog.json is not valid JSON.</strong><br/>' +
-          'Fix trailing/missing commas, and ensure keys are quoted. See preview below.\n' +
-          '\nError: ' + parseErr.message + '</div>';
-        errBox.appendChild(pre);
-        throw parseErr;
-      }
-      const books = (data && Array.isArray(data.books)) ? data.books : [];
-      render(books);
-    }catch(e){ console.error(e); }
-  }
+    // Normalize genre labels (fix common typos / variants in your JSON)
+    const GENRE_MAP = new Map([
+      ['yound adult','Young Adult'],
+      ['young adult','Young Adult'],
+      ['american literature','American Literature'],
+      ['american fiction','American Fiction'],
+      ['psychological ficton','Psychological Fiction'],
+      ['gothic','Gothic Horror'],
+      ['didactic fiction','Didactic Fiction'],
+      ['classical literature','Classical Literature'],
+      ['detective & mystery','Detective & Mystery'],
+      ['romance/love','Romance/Love'],
+      ['india fiction','India Fiction'],
+      ['children\'s literature',"Children's Literature"]
+    ]);
 
-  function render(books){
-    const list = document.getElementById('results');
-    list.innerHTML = '';
-    const q = document.getElementById('q').value.trim().toLowerCase();
-    const filtered = books.filter(b => {
-      const genres = Array.isArray(b.genres) ? b.genres : [];
-      const hay = [b.title, b.author, b.id, ...genres].join(' ').toLowerCase();
-      return q ? hay.includes(q) : true;
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+
+    // ---- Boot ----
+    window.addEventListener('hashchange', routeFromHash);
+    document.getElementById('backBtn').addEventListener('click', ()=>goGenres());
+    document.getElementById('showAll').addEventListener('click', ()=>{
+      CURRENT_GENRE = null;
+      renderBooks('All');
+      location.hash = '#all';
     });
-    document.getElementById('count').textContent = filtered.length + ' title' + (filtered.length===1?'':'s');
-    document.getElementById('empty').hidden = !!filtered.length;
+    $('#q').addEventListener('input', ()=> renderBooks(CURRENT_GENRE || 'All'));
 
-    for (const b of filtered){
-      const card = document.createElement('article');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="content">
-          <div class="title">${escapeHTML(b.title || 'Untitled')}</div>
-          <div class="meta">${escapeHTML(b.author || 'Unknown')}</div>
-          <div class="meta">${escapeHTML(b.id || '')}</div>
-          <div class="genres">${(b.genres||[]).map(g=>`<span class="chip">${escapeHTML(g)}</span>`).join('')}</div>
-        </div>
-        <div class="actions">
-          <button data-act="open">Open in Reader</button>
-          <a class="secondary" role="button" href="${encodeURI(b.download||'#')}" download>Download .txt</a>
-        </div>`;
-      card.querySelector('button[data-act="open"]').addEventListener('click', ()=> handoffToReader(b));
-      list.appendChild(card);
-    }
+    loadCatalog().then(()=>{
+      routeFromHash(); // allow deep links like #genre=Science%20Fiction
+    });
 
-    function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]||c)); }
-  }
-
-  async function handoffToReader(book){
-    if (!book || !book.download){ alert('No download path for this title.'); return; }
-    try{
-      const res = await fetch(book.download, { cache:'no-store' });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const text = await res.text();
-
-      const payload = {
-        kind: 'reader-import',
-        name: makeFileName(book),
-        id: book.id || null,
-        meta: {
-          title: book.title || null,
-          author: book.author || null,
-          dialogue_pct: book['dialogue %'] ?? book['Dialogue %'] ?? null,
-          lexical_diversity: book['lexical diversity'] ?? book['Lexical Diversity'] ?? null,
-          df_score: book.df_score ?? null,
-          fk_grade: book.fk_grade ?? null,
-          genres: Array.isArray(book.genres) ? book.genres : []
-        },
-        text
-      };
-      // Stash payload for a potential new Reader window to pick up
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-
-      // Try to reuse an existing Reader via BroadcastChannel ping/pong
-      let usedExisting = false;
-      try {
-        const bc = new BroadcastChannel(CHANNEL);
-        const timeoutMs = 450;
-        const t0 = Date.now();
-        const onMsg = (ev) => {
-          const d = ev && ev.data;
-          if (d && d.type === 'pong') {
-            usedExisting = true;
-            bc.postMessage({ type:'import', payload });
-            bc.close();
-          }
-        };
-        bc.onmessage = onMsg;
-        // Send ping and wait briefly
-        bc.postMessage({ type:'ping', from:'catalog' });
-        await new Promise(res => setTimeout(res, timeoutMs));
-        if (!usedExisting) bc.close();
-      } catch {}
-
-      if (!usedExisting) {
-        // Open or reuse a named window/tab for the Reader
-        const url = new URL(READER_URL, location.href);
-        url.hash = '#import';
-        const w = window.open(url.toString(), READER_WINDOW_NAME);
-        if (w && typeof w.focus === 'function') w.focus();
-        if (!w) {
-          // popup blocked: last-resort fallback (navigate current tab)
-          location.href = url.toString();
+    async function loadCatalog(){
+      const errBox = document.getElementById('errors'); errBox.innerHTML = '';
+      try{
+        const res = await fetch(CATALOG_URL, { cache:'no-store' });
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); }
+        catch(parseErr){
+          showJsonError(parseErr, text);
+          throw parseErr;
         }
-      } else {
-        // If an existing reader handled it, keep this tab as-is
-        console.debug('[Catalog] Sent to existing Reader');
+        const raw = (data && Array.isArray(data.books)) ? data.books : [];
+        // Clean & normalize a bit
+        ALL_BOOKS = raw.map(cleanBook);
+        buildGenresView(ALL_BOOKS);
+      }catch(e){
+        console.error(e);
+        errBox.innerHTML = '<div class="error"><strong>Failed to load catalog.</strong> ' +
+                           'Check that catalog.json is reachable from this page.</div>';
       }
-    }catch(err){
-      console.error(err);
-      alert('Failed to fetch text: ' + err.message);
     }
-  }
 
-  function makeFileName(b){
-    const t = (b.title||'book').replace(/[^a-z0-9]+/gi,'_').replace(/^_+|_+$/g,'');
-    const a = (b.author||'').split(',')[0]?.trim().replace(/[^a-z0-9]+/gi,'_');
-    const id = (b.id||'').replace(/[^a-z0-9]+/gi,'');
-    return [t, a, id].filter(Boolean).join('_') + '.txt';
-  }
+    function cleanBook(b){
+      const g = Array.isArray(b.genres) ? b.genres.map(x => {
+        const k = String(x||'').trim();
+        const key = k.toLowerCase();
+        return GENRE_MAP.get(key) || k;
+      }) : [];
+      return {
+        ...b,
+        id: b.id || null,
+        title: b.title || 'Untitled',
+        author: b.author || 'Unknown',
+        download: b.download || '',
+        genres: g,
+        dialogue_pct: b['dialogue %'] ?? b['Dialogue %'] ?? null,
+        lexical_diversity: b['lexical diversity'] ?? b['Lexical Diversity'] ?? null,
+        df_score: b.df_score ?? null,
+        fk_grade: b.fk_grade ?? null
+      };
+    }
 
-  document.getElementById('q').addEventListener('input', () => {
-    // re-fetch to keep it simple (or keep a cached copy if you like)
-    loadCatalog();
-  });
+    function showJsonError(parseErr, text){
+      const errBox = document.getElementById('errors');
+      const pre = document.createElement('pre');
+      pre.textContent = text.slice(0, 1500);
+      errBox.innerHTML = '<div class="error"><strong>catalog.json is not valid JSON.</strong><br/>' +
+        'Fix trailing/missing commas, quote all keys, and ensure arrays are valid.<br/>' +
+        'Error: ' + parseErr.message + '</div>';
+      errBox.appendChild(pre);
+    }
 
-  loadCatalog();
+    // ---- Routing ----
+    function routeFromHash(){
+      const h = new URLSearchParams(location.hash.replace(/^#/, ''));
+      const g = h.get('genre');
+      if (location.hash === '#all'){
+        CURRENT_GENRE = null;
+        renderBooks('All');
+        return;
+      }
+      if (g){
+        const decoded = decodeURIComponent(g);
+        CURRENT_GENRE = decoded;
+        renderBooks(decoded);
+      } else {
+        goGenres();
+      }
+    }
+
+    function goGenres(){
+      $('#view-books').hidden = true;
+      $('#view-genres').hidden = false;
+      location.hash = '';
+      window.scrollTo({ top:0, behavior:'instant' });
+    }
+
+    // ---- Genres view ----
+    function buildGenresView(books){
+      const grid = document.getElementById('genresGrid');
+      grid.innerHTML = '';
+      const counts = new Map();
+      for (const b of books){
+        if (!Array.isArray(b.genres) || !b.genres.length){
+          counts.set('Uncategorized', (counts.get('Uncategorized')||0)+1);
+        }else{
+          for (const g of b.genres){
+            counts.set(g, (counts.get(g)||0)+1);
+          }
+        }
+      }
+      const items = Array.from(counts.entries())
+        .sort((a,b)=> a[0].localeCompare(b[0]));
+
+      for (const [genre, count] of items){
+        const el = document.createElement('article');
+        el.className = 'genre-card';
+        el.setAttribute('role','listitem');
+        el.innerHTML = `
+          <div class="genre-title">${escapeHTML(genre)}</div>
+          <div class="genre-meta">${count} title${count===1?'':'s'}</div>
+          <div class="genre-chips">
+            <span class="chip">Browse</span>
+          </div>`;
+        el.addEventListener('click', ()=>{
+          CURRENT_GENRE = genre;
+          renderBooks(genre);
+          location.hash = 'genre=' + encodeURIComponent(genre);
+        });
+        grid.appendChild(el);
+      }
+      // Show genres view
+      $('#view-genres').hidden = false;
+      $('#view-books').hidden = true;
+    }
+
+    // ---- Books view ----
+    function renderBooks(genre){
+      const heading = document.getElementById('genreHeading');
+      const list = document.getElementById('results');
+      const q = document.getElementById('q').value.trim().toLowerCase();
+
+      $('#view-genres').hidden = true;
+      $('#view-books').hidden = false;
+
+      heading.textContent = genre || 'All';
+      const inGenre = (genre && genre !== 'All')
+        ? ALL_BOOKS.filter(b => (b.genres||[]).includes(genre))
+        : ALL_BOOKS.slice();
+
+      const filtered = inGenre.filter(b => {
+        const genres = Array.isArray(b.genres) ? b.genres : [];
+        const hay = [b.title, b.author, b.id, ...genres].join(' ').toLowerCase();
+        return q ? hay.includes(q) : true;
+      });
+
+      $('#countPill').textContent = filtered.length + ' title' + (filtered.length===1?'':'s');
+      $('#empty').hidden = !!filtered.length;
+      list.innerHTML = '';
+
+      for (const b of filtered){
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.setAttribute('role','listitem');
+        card.innerHTML = `
+          <div class="content">
+            <div class="title">${escapeHTML(b.title)}</div>
+            <div class="meta">${escapeHTML(b.author)}</div>
+            <div class="meta">${escapeHTML(b.id || '')}</div>
+            <div class="metrics">
+              ${metric('Dialogue', fmtPct(b.dialogue_pct))}
+              ${metric('Lexical', b.lexical_diversity!=null ? String(b.lexical_diversity) : '—')}
+              ${metric('DF', b.df_score!=null ? String(b.df_score) : '—')}
+              ${metric('FK', b.fk_grade!=null ? String(b.fk_grade) : '—')}
+            </div>
+            <div class="genres-line">
+              ${(b.genres||[]).map(g => `<span class="chip">${escapeHTML(g)}</span>`).join('')}
+            </div>
+          </div>
+          <div class="actions">
+            <button data-act="open">Open in Reader</button>
+            ${b.download ? `<a class="secondary" role="button" href="${encodeURI(b.download)}" download>Download .txt</a>` : ''}
+          </div>`;
+        card.querySelector('button[data-act="open"]').addEventListener('click', ()=> handoffToReader(b));
+        list.appendChild(card);
+      }
+      window.scrollTo({ top:0, behavior:'instant' });
+
+      function metric(label, val){
+        return `<span class="metric"><strong>${escapeHTML(label)}:</strong> ${escapeHTML(val)}</span>`;
+      }
+      function fmtPct(x){
+        if (x==null || isNaN(x)) return '—';
+        return (Math.round(Number(x)*10)/10) + '%';
+      }
+    }
+
+    // ---- Reader handoff (same pattern as your loader) ----
+    async function handoffToReader(book){
+      if (!book || !book.download){ alert('No download path for this title.'); return; }
+      try{
+        const res = await fetch(book.download, { cache:'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const text = await res.text();
+
+        const payload = {
+          kind: 'reader-import',
+          name: makeFileName(book),
+          id: book.id || null,
+          meta: {
+            title: book.title || null,
+            author: book.author || null,
+            dialogue_pct: book.dialogue_pct ?? null,
+            lexical_diversity: book.lexical_diversity ?? null,
+            df_score: book.df_score ?? null,
+            fk_grade: book.fk_grade ?? null,
+            genres: Array.isArray(book.genres) ? book.genres : []
+          },
+          text
+        };
+        // Stash payload in case a new Reader window is opened
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+
+        let usedExisting = false;
+        try {
+          if ('BroadcastChannel' in window){
+            const bc = new BroadcastChannel(CHANNEL);
+            const timeoutMs = 450;
+            bc.onmessage = (ev) => {
+              const d = ev && ev.data;
+              if (d && d.type === 'pong') {
+                usedExisting = true;
+                bc.postMessage({ type:'import', payload });
+                bc.close();
+              }
+            };
+            bc.postMessage({ type:'ping', from:'catalog' });
+            await new Promise(res => setTimeout(res, timeoutMs));
+            if (!usedExisting) bc.close();
+          }
+        } catch {}
+
+        if (!usedExisting) {
+          const url = new URL(READER_URL, location.href);
+          url.hash = '#import';
+          const w = window.open(url.toString(), READER_WINDOW_NAME);
+          if (w && typeof w.focus === 'function') w.focus();
+          if (!w) location.href = url.toString(); // popup blocked fallback
+        }
+      }catch(err){
+        console.error(err);
+        alert('Failed to fetch text: ' + err.message);
+      }
+    }
+
+    // ---- Helpers ----
+    function makeFileName(b){
+      const t = (b.title||'book').replace(/[^a-z0-9]+/gi,'_').replace(/^_+|_+$/g,'');
+      const a = (b.author||'').split(',')[0]?.trim().replace(/[^a-z0-9]+/gi,'_');
+      const id = (b.id||'').replace(/[^a-z0-9]+/gi,'');
+      return [t, a, id].filter(Boolean).join('_') + '.txt';
+    }
+    function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]||c)); }
+
   </script>
 </body>
 </html>
