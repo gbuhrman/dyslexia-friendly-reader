@@ -2,6 +2,22 @@
   "version": 1,
   "updated": "2025-08-11",
   "books": [
+   
+
+  {
+      "id": "PG74",
+      "title": "The Adventures of Tom Sawyer",
+      "author": "Twain, Mark",
+      "download": "./books/pg74.txt",
+      "dialogue %": 32.6,
+      "lexical diversity": 0.35,
+      "df_score": 49.3,
+      "fk_grade": 8.1,
+      "genres": [
+        "Humorous Stories"
+      ]
+    },
+
     {
       "id": "PG17396",
       "title": "The Secret Garden",
@@ -28,6 +44,877 @@
         "Detective & Mystery"
       ]
     },
+
+  {
+      "id": "PG236",
+      "title": "The Jungle Book",
+      "author": "Kipling, Rudyard",
+      "download": "./books/pg236.txt",
+      "dialogue %": 60.2,
+      "lexical diversity": 0.1,
+      "df_score": 48.1,
+      "fk_grade": 7.5,
+      "genres": [
+        "Children's Literature"
+      ]
+    },
+
+
+  {
+      "id": "PG910",
+      "title": "White Fang",
+      "author": "London, Jack",
+      "download": "./books/pg910.txt",
+      "dialogue %": 0.0,
+      "lexical diversity": 0.30,
+      "df_score": 49.6,
+      "fk_grade": 7.9,
+      "genres": [
+        "Children's Literature"
+      ]
+    },
+
+
+   {
+      "id": "PG175",
+      "title": "The Phantom of the Opera",
+      "author": "Leroux, Gaston",
+      "download": "./books/pg175.txt",
+      "dialogue %": 38.3,
+      "lexical diversity": 0.29,
+      "df_score": 50.7,
+      "fk_grade": 8.0,
+      "genres": [
+        "Gothic Horror"
+      ]
+    },
+
+    {
+      "id": "PG61221",
+      "title": "A Passage to India",
+      "author": "Forster, E.M.",
+      "download": "./books/pg61221.txt",
+      "dialogue %": 32.4,
+      "lexical diversity": 0.37,
+      "df_score": 48.2,
+      "fk_grade": 8.9,
+      "genres": [
+        "Historical Fiction"
+      ]
+    },
+
+
+
+    {
+      "id": "PG31979",
+      "title": "The Tunnel Under the World",
+      "author": "Pohl, Frederick",
+      "download": "./books/pg31979.txt",
+      "dialogue %": 51.2,
+      "lexical diversity": 0.20,
+      "df_score": 56.7,
+      "fk_grade": 6.4,
+      "genres": [
+        "Science Fiction"
+      ]
+    },
+ 
+    {
+      "id": "PG51",
+      "title": "Anne of the Island",
+      "author": "Montgomery, L.M.",
+      "download": "./books/pg51.txt",
+      "dialogue %": 53.6,
+      "lexical diversity": 0.35,
+      "df_score": 52.7,
+      "fk_grade": 7.3,
+      "genres": [
+        "Young Adult"
+      ]
+    },
+    {
+      "id": "PG500",
+      "title": "The Adventures of Pinocchio",
+      "author": "Collodi, Carlo",
+      "download": "./books/pg500.txt",
+      "dialogue %": 42.5,
+      "lexical diversity": 0.38,
+      "df_score": 52.5,
+      "fk_grade": 6.7,
+      "genres": [
+        "Children's Literature"
+      ]
+    },
+    {
+      "id": "PG1874",
+      "title": "The Railway Children",
+      "author": "Nesbit, Edith",
+      "download": "./books/pg1874.txt",
+      "dialogue %": 41.4,
+      "lexical diversity": 0.23,
+      "df_score": 52.4,
+      "fk_grade": 6.6,
+      "genres": [
+        "Children's Literature"
+      ]
+    },
+    {
+      "id": "PG47",
+      "title": "Anne of Avolea",
+      "author": "Montgomery, L.M.",
+      "download": "./books/pg47.txt",
+      "dialogue %": 57.5,
+      "lexical diversity": 0.30,
+      "df_score": 52.0,
+      "fk_grade": 7.5,
+      "genres": [
+        "Young Adult"
+      ]
+    },
+    {
+      "id": "PG5230",
+      "title": "The Invisible Man: A Grotesque Romance",
+      "author": "Wells, H.G.",
+      "download": "./books/pg5230.txt",
+      "dialogue %": 34.8,
+      "lexical diversity": 0.37,
+      "df_score": 51.6,
+      "fk_grade": 7.9,
+      "genres": [
+        "Science Fiction"
+      ]
+    },
+    {
+      "id": "PG2554",
+      "title": "Crime and Punishment",
+      "author": "Dostoyevsky, Fyodor",
+      "download": "./books/pg2554.txt",
+      "dialogue %": 56.1,
+      "lexical diversity": 0.23,
+      "df_score": 51.5,
+      "fk_grade": 8.0,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+    {
+      "id": "PG1952",
+      "title": "The Yellow Wallpaper",
+      "author": "Gilman, Charlotte Perkins",
+      "download": "./books/pg1952.txt",
+      "dialogue %": 42.3,
+      "lexical diversity": 0.20,
+      "df_score": 51.5,
+      "fk_grade": 7.0,
+      "genres": [
+        "Psychological Fiction"
+      ]
+    },
+ 
+    {
+      "id": "PG45",
+      "title": "Anne of Green Gables",
+      "author": "Montgomery, L.M.",
+      "download": "./books/pg45.txt",
+      "dialogue %": 54.7,
+      "lexical diversity": 0.31,
+      "df_score": 50.2,
+      "fk_grade": 7.9,
+      "genres": [
+        "Yound Adult"
+      ]
+    },
+    {
+      "id": "PG219",
+      "title": "Heart of Darkness",
+      "author": "Conrad, Joseph",
+      "download": "./books/pg219.txt",
+      "dialogue %": 94.7,
+      "lexical diversity": 0.21,
+      "df_score": 49.8,
+      "fk_grade": 8.2,
+      "genres": [
+        "Psychological Ficton"
+      ]
+    },
+  
+    {
+      "id": "PG8117",
+      "title": "The Possessed",
+      "author": "Dostoyevsky, Fyodor",
+      "download": "./books/pg8117.txt",
+      "dialogue %": 47.0,
+      "lexical diversity": 0.20,
+      "df_score": 49.2,
+      "fk_grade": 8.7,
+      "genres": [
+        "Psychological Fiction"
+      ]
+    },
+    {
+      "id": "PG30240",
+      "title": "The Big Trip Up Yonder",
+      "author": "Vonnegut, Kurt",
+      "download": "./books/pg30240.txt",
+      "dialogue %": 32.3,
+      "lexical diversity": 0.33,
+      "df_score": 49.0,
+      "fk_grade": 8.5,
+      "genres": [
+        "Science Fiction"
+      ]
+    },
+    {
+      "id": "PG108",
+      "title": "The Return of Sherlock Holmes",
+      "author": "Doyle, Arthur Conan",
+      "download": "./books/pg108.txt",
+      "dialogue %": 67.7,
+      "lexical diversity": 0.21,
+      "df_score": 49.0,
+      "fk_grade": 8.2,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+    {
+      "id": "PG805",
+      "title": "This Side of Paradise",
+      "author": "Fitzgerald, F. Scott",
+      "download": "./books/pg805.txt",
+      "dialogue %": 32.4,
+      "lexical diversity": 0.26,
+      "df_score": 48.7,
+      "fk_grade": 9.0,
+      "genres": [
+        "Romance/Love"
+      ]
+    },
+    {
+      "id": "PG9830",
+      "title": "The Beautiful and the Damned",
+      "author": "Fitzgerald, F. Scott",
+      "download": "./books/pg9830.txt",
+      "dialogue %": 32.1,
+      "lexical diversity": 0.23,
+      "df_score": 48.2,
+      "fk_grade": 9.2,
+      "genres": [
+        "Psychological Fiction"
+      ]
+    },
+ 
+    {
+      "id": "PG55",
+      "title": "The Wonderful Wizard of Oz",
+      "author": "Baum, L. Frank",
+      "download": "./books/pg55.txt",
+      "dialogue %": 36.0,
+      "lexical diversity": 0.33,
+      "df_score": 46.5,
+      "fk_grade": 8.4,
+      "genres": [
+        "Fantasy"
+      ]
+    },
+    {
+      "id": "PG23042",
+      "title": "The Tempest",
+      "author": "Shakespeare, William",
+      "download": "./books/pg23042.txt",
+      "dialogue %": 0.0,
+      "lexical diversity": 0.18,
+      "df_score": 64.6,
+      "fk_grade": 3.8,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG1254",
+      "title": "Cyrano de Bergerac",
+      "author": "Rostand, Edmond",
+      "download": "./books/pg1254.txt",
+      "dialogue %": 0.0,
+      "lexical diversity": 0.13,
+      "df_score": 62.1,
+      "fk_grade": 5.2,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG27761",
+      "title": "Hamlet, Price of Denmark",
+      "author": "Shakespeare, William",
+      "download": "./books/pg27761.txt",
+      "dialogue %": 73.7,
+      "lexical diversity": 0.16,
+      "df_score": 61.5,
+      "fk_grade": 5.0,
+      "genres": [
+        "Classical Literature"
+      ]
+    },{
+      "id": "PG1533",
+      "title": "Macbeth",
+      "author": "Shakespeare, William",
+      "download": "./books/pg1533.txt",
+      "dialogue %": 38.4,
+      "lexical diversity": 0.17,
+      "df_score": 59.4,
+      "fk_grade": 5.11,
+      "genres": [
+        "Classical Literature"
+      ]
+    },{
+      "id": "PG1526",
+      "title": "Twelfth Night; Or, What You Will",
+      "author": "Shakespheare, William",
+      "download": "./books/pg1526.txt",
+      "dialogue %": 0.0,
+      "lexical diversity": 0.14,
+      "df_score": 58.9,
+      "fk_grade": 5.3,
+      "genres": [
+        "Classical Literature"
+      ]
+    },{
+      "id": "PG1531",
+      "title": "Othello, the Moor of Venice",
+      "author": "Shakespeare, William",
+      "download": "./books/pg1531.txt",
+      "dialogue %": 0.0,
+      "lexical diversity": 0.13,
+      "df_score": 58.6,
+      "fk_grade": 5.8,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG14591",
+      "title": "Faust",
+      "author": "Goethe, Johann",
+      "download": "./books/pg14591.txt",
+      "dialogue %": 0.0,
+      "lexical diversity": 0.17,
+      "df_score": 55.3,
+      "fk_grade": 6.7,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG1514",
+      "title": "A Midsummer Night's Dream",
+      "author": "Shakespeare, William",
+      "download": "./books/pg1514.txt",
+      "dialogue %": 0.0,
+      "lexical diversity": 0.17,
+      "df_score": 55.1,
+      "fk_grade": 6.3,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG73",
+      "title": "The Red Badge of Courage",
+      "author": "Crane, Stephen",
+      "download": "./books/pg73.txt",
+      "dialogue %": 16.2,
+      "lexical diversity": 0.38,
+      "df_score": 53.4,
+      "fk_grade": 7.1,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG1513",
+      "title": "Romeo and Juliet",
+      "author": "Shakespeare, William",
+      "download": "./books/pg1513.txt",
+      "dialogue %": 0.0,
+      "lexical diversity": 0.43,
+      "df_score": 53.3,
+      "fk_grade": 7.0,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG12242",
+      "title": "Poems by Emily Dickinson",
+      "author": "Dickinson, Emily",
+      "download": "./books/pg12242.txt",
+      "dialogue %": 21.8,
+      "lexical diversity": 0.18,
+      "df_score": 53.3,
+      "fk_grade": 7.0,
+      "genres": [
+        "Poetry"
+      ]
+    },
+    {
+      "id": "PG1250",
+      "title": "Anthem",
+      "author": "Rand, Ayn",
+      "download": "./books/pg1250.txt",
+      "dialogue %": 10.3,
+      "lexical diversity": 0.30,
+      "df_score": 52.8,
+      "fk_grade": 6.0,
+      "genres": [
+        "Didactic Fiction"
+      ]
+    },
+    {
+      "id": "PG51",
+      "title": "Anne of the Island",
+      "author": "Montgomery, L.M.",
+      "download": "./books/pg51.txt",
+      "dialogue %": 53.6,
+      "lexical diversity": 0.35,
+      "df_score": 52.7,
+      "fk_grade": 7.3,
+      "genres": [
+        "Young Adult"
+      ]
+    },
+    {
+      "id": "PG159",
+      "title": "The Island of Doctor Moreau",
+      "author": "Wells, H.G.",
+      "download": "./books/pg159.txt",
+      "dialogue %": 16.0,
+      "lexical diversity": 0.36,
+      "df_score": 50.0,
+      "fk_grade": 8.3,
+      "genres": [
+        "Science Fiction"
+      ]
+    },
+    {
+      "id": "PG46",
+      "title": "A Christmas Carol in Prose: Being a Ghost Story of Christmas",
+      "author": "Dickens, Charles",
+      "download": "./books/pg46.txt",
+      "dialogue %": 30.0,
+      "lexical diversity": 0.25,
+      "df_score": 49.7,
+      "fk_grade": 7.9,
+      "genres": [
+        "Children's Literature"
+      ]
+    },
+  
+    {
+      "id": "PG14838",
+      "title": "The Tale of Peter Rabbit",
+      "author": "Potter, Beatrix",
+      "download": "./books/pg14838.txt",
+      "dialogue %": 0.0,
+      "lexical diversity": 0.38,
+      "df_score": 49.4,
+      "fk_grade": 8.0,
+      "genres": [
+        "Children's Literature"
+      ]
+    },
+    {
+      "id": "PG16",
+      "title": "Peter Pan",
+      "author": "Barrie, J.M.",
+      "download": "./books/pg16.txt",
+      "dialogue %": 20.0,
+      "lexical diversity": 0.29,
+      "df_score": 49.1,
+      "fk_grade": 8.0,
+      "genres": [
+        "Children's Literature"
+      ]
+    },
+    {
+      "id": "PG805",
+      "title": "This Side of Paradise",
+      "author": "Fitsgerald, F. Scott",
+      "download": "./books/pg805.txt",
+      "dialogue %": 32.4,
+      "lexical diversity": 0.26,
+      "df_score": 48.7,
+      "fk_grade": 9.0,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG9830",
+      "title": "The Beautiful and the Damned",
+      "author": "Fitxgerald, F. Scott",
+      "download": "./books/pg9830.txt",
+      "dialogue %": 32.1,
+      "lexical diversity": 0.23,
+      "df_score": 48.2,
+      "fk_grade": 9.2,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG3748",
+      "title": "A Journey into the Interior of the Earth",
+      "author": "Verne, Jules",
+      "download": "./books/pg3748.txt",
+      "dialogue %": 23.9,
+      "lexical diversity": 0.40,
+      "df_score": 48.1,
+      "fk_grade": 9.1,
+      "genres": [
+        "Science Fiction"
+      ]
+    },
+
+    {
+      "id": "PG19033",
+      "title": "Alice's Adventures in Wonderland",
+      "author": "Carroll, Lewis",
+      "download": "./books/pg19033.txt",
+      "dialogue %": 33.0,
+      "lexical diversity": 0.15,
+      "df_score": 48.0,
+      "fk_grade": 8.1,
+      "genres": [
+        "Children's Literature"
+      ]
+    },
+    {
+      "id": "PG76",
+      "title": "Adventures of Huckleberry Finn",
+      "author": "Twain, Mark",
+      "download": "./books/pg76.txt",
+      "dialogue %": 36.1,
+      "lexical diversity": 0.26,
+      "df_score": 47.7,
+      "fk_grade": 7.8,
+      "genres": [
+        "American Fiction"
+      ]
+    },
+    {
+      "id": "PG2852",
+      "title": "The Hound of the Baskervilles",
+      "author": "Doyle, Arthur Conan",
+      "download": "./books/pg2852.txt",
+      "dialogue %": 45.5,
+      "lexical diversity": 0.28,
+      "df_score": 47.4,
+      "fk_grade": 8.9,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+    {
+      "id": "PG120",
+      "title": "Treasure Island",
+      "author": "Stevenson, Robert Louis",
+      "download": "./books/pg120.txt",
+      "dialogue %": 27.8,
+      "lexical diversity": 0.33,
+      "df_score": 47.0,
+      "fk_grade": 8.8,
+      "genres": [
+        "American Literature"
+      ]
+    },
+    {
+      "id": "PG1399",
+      "title": "Anna Karenina",
+      "author": "Tolstoy, Leo",
+      "download": "./books/pg1399.txt",
+      "dialogue %": 30.0,
+      "lexical diversity": 0.36,
+      "df_score": 46.9,
+      "fk_grade": 9.6,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG345",
+      "title": "Dracula",
+      "author": "Stoker, Bram",
+      "download": "./books/pg345.txt",
+      "dialogue %": 36.5,
+      "lexical diversity": 0.22,
+      "df_score": 46.6,
+      "fk_grade": 8.4,
+      "genres": [
+        "Gothic Horror"
+      ]
+    },
+    {
+      "id": "PG164",
+      "title": "Twenty Thousand Leagues under the Sea",
+      "author": "Verne, Jules",
+      "download": "./books/pg164.txt",
+      "dialogue %": 26.4,
+      "lexical diversity": 0.36,
+      "df_score": 46.4,
+      "fk_grade": 9.7,
+      "genres": [
+        "Science Fiction"
+      ]
+    },
+    {
+      "id": "PG2600",
+      "title": "War and Peace",
+      "author": "Tolstoy, Leo",
+      "download": "./books/pg2600.txt",
+      "dialogue %": 21.1,
+      "lexical diversity": 0.37,
+      "df_score": 45.7,
+      "fk_grade": 10.5,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG768",
+      "title": "Wuthering Heights",
+      "author": "Bronte, Emily",
+      "download": "./books/pg768.txt",
+      "dialogue %": 46.0,
+      "lexical diversity": 0.35,
+      "df_score": 45.7,
+      "fk_grade": 10.5,
+      "genres": [
+        "Romance/Love"
+      ]
+    },
+    {
+      "id": "PG289",
+      "title": "The Wind in the Willows",
+      "author": "Grahame, Kenneth",
+      "download": "./books/pg289.txt",
+      "dialogue %": 0.0,
+      "lexical diversity": 0.24,
+      "df_score": 45.7,
+      "fk_grade": 9.5,
+      "genres": [
+        "Children's Literature"
+      ]
+    },
+    {
+      "id": "PG834",
+      "title": "The Memoirs of Sherlock Holmes",
+      "author": "Doyle, Arthur Conan",
+      "download": "./books/pg834.txt",
+      "dialogue %": 77.6,
+      "lexical diversity": 0.1,
+      "df_score": 45.5,
+      "fk_grade": 9.0,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+    {
+      "id": "PG36",
+      "title": "The War of the Worlds",
+      "author": "Wells, H. G.",
+      "download": "./books/pg36.txt",
+      "dialogue %": 0.0,
+      "lexical diversity": 0.37,
+      "df_score": 45.3,
+      "fk_grade": 10.1,
+      "genres": [
+        "Science Fiction"
+      ]
+    },
+    {
+      "id": "PG514",
+      "title": "Little Women",
+      "author": "Alcott, Louisa May",
+      "download": "./books/pg514.txt",
+      "dialogue %": 42.4,
+      "lexical diversity": 0.25,
+      "df_score": 45.2,
+      "fk_grade": 9.3,
+      "genres": [
+        "Young Adult"
+      ]
+    },
+    {
+      "id": "PG215",
+      "title": "The Call of the Wild",
+      "author": "London, Jack",
+      "download": "./books/pg215.txt",
+      "dialogue %": 40.9,
+      "lexical diversity": 0.29,
+      "df_score": 45.2,
+      "fk_grade": 8.9,
+      "genres": [
+        "Children's Literature"
+      ]
+    },
+    {
+      "id": "PG203",
+      "title": "Uncle Tom's Cabin",
+      "author": "Stowe, Harriet Beecher",
+      "download": "./books/pg203.txt",
+      "dialogue %": 44.0,
+      "lexical diversity": 0.29,
+      "df_score": 45.2,
+      "fk_grade": 9.5,
+      "genres": [
+        "American Fiction"
+      ]
+    },
+    {
+      "id": "PG271",
+      "title": "Black Beauty",
+      "author": "Sewell, Anna",
+      "download": "./books/pg271.txt",
+      "dialogue %": 36.0,
+      "lexical diversity": 0.31,
+      "df_score": 45.2,
+      "fk_grade": 11.0,
+      "genres": [
+        "Young Adult"
+      ]
+    },
+    {
+      "id": "PG86",
+      "title": "A Conneticut Yankee in King Arthur's Court",
+      "author": "Twain, Mark",
+      "download": "./books/pg86.txt",
+      "dialogue %": 26.7,
+      "lexical diversity": 0.34,
+      "df_score": 44.9,
+      "fk_grade": 10.2,
+      "genres": [
+        "American Fiction"
+      ]
+    },
+    {
+      "id": "PG140",
+      "title": "The Jungle",
+      "author": "Sinclair, Upton",
+      "download": "./books/pg140.txt",
+      "dialogue %": 12.2,
+      "lexical diversity": 0.26,
+      "df_score": 44.7,
+      "fk_grade": 11.4,
+      "genres": [
+        "American Literature"
+      ]
+    },
+    {
+      "id": "PG2500",
+      "title": "Siddhartha",
+      "author": "Hesse, Hermann",
+      "download": "./books/pg2500.txt",
+      "dialogue %": 31.8,
+      "lexical diversity": 0.24,
+      "df_score": 43.5,
+      "fk_grade": 10.9,
+      "genres": [
+        "India Fiction"
+      ]
+    },
+    {
+      "id": "PG5200",
+      "title": "Metamorphosis",
+      "author": "Kafka, Franz",
+      "download": "./books/pg5200.txt",
+      "dialogue %": 12.0,
+      "lexical diversity": 0.11,
+      "df_score": 43.5,
+      "fk_grade": 12.6,
+      "genres": [
+        "Classical Literature"
+      ]
+    },
+    {
+      "id": "PG1342",
+      "title": "Pride and Prejudice",
+      "author": "Austen, Jane",
+      "download": "./books/pg1342.txt",
+      "dialogue %": 45.3,
+      "lexical diversity": 0.34,
+      "df_score": 42.4,
+      "fk_grade": 11.8,
+      "genres": [
+        "Romance/Love"
+      ]
+    },
+    {
+      "id": "PG105",
+      "title": "Persuasion",
+      "author": "Austen, Jane",
+      "download": "./books/pg105.txt",
+      "dialogue %": 32.6,
+      "lexical diversity": 0.28,
+      "df_score": 42.0,
+      "fk_grade": 12.9,
+      "genres": [
+        "Romance/Love"
+      ]
+    },
+    {
+      "id": "PG25344",
+      "title": "The Scarlet Letter",
+      "author": "Hawthorne, Nathaneil",
+      "download": "./books/pg25344.txt",
+      "dialogue %": 18.8,
+      "lexical diversity": 0.1,
+      "df_score": 41.8,
+      "fk_grade": 12.9,
+      "genres": [
+        "American Literature"
+      ]
+    },
+    {
+      "id": "PG41445",
+      "title": "Frankenstein; Or, The Modern Prometheus",
+      "author": "Shelley, Mary W.",
+      "download": "./books/pg41445.txt",
+      "dialogue %": 45.5,
+      "lexical diversity": 0.33,
+      "df_score": 41.6,
+      "fk_grade": 12.4,
+      "genres": [
+        "Gothic Horror"
+      ]
+    },
+    {
+      "id": "PG161",
+      "title": "Sense and Sensibility",
+      "author": "Austen, Jane",
+      "download": "./books/pg161.txt",
+      "dialogue %": 40.3,
+      "lexical diversity": 0.32,
+      "df_score": 41.5,
+      "fk_grade": 13.6,
+      "genres": [
+        "Romance/Love"
+      ]
+    },
+    {
+      "id": "PG2148",
+      "title": "The Works of Edgar Allan Poe Vol. 2",
+      "author": "Poe, Edgar Allan",
+      "download": "./books/pg2148.txt",
+      "dialogue %": 57.3,
+      "lexical diversity": 0.11,
+      "df_score": 41.4,
+      "fk_grade": 12.5,
+      "genres": [
+        "Gothic Horror"
+      ]
+    },
+
     {
       "id": "PG174",
       "title": "The Picture of Dorian Gray",
