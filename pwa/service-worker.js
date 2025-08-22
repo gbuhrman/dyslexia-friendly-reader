@@ -22,7 +22,8 @@ const APP_SHELL = [
   './manifest.json',
   './reader.css',
   './reader.js',
-  './vendor/epub/epub.min.js',
+  './vendor/jszip/jszip.min.js',
+
 
   // Fonts (optional but helpful for offline)
   './fonts/OpenDyslexic-Regular.woff2',
