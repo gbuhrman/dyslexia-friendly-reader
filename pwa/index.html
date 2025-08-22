@@ -1,32 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta http-equiv="Content-Security-Policy" content="
+<meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
   script-src 'self';
   style-src 'self';
-  img-src 'self' data:;
-  font-src 'self';
+  img-src 'self' data: blob:;
+  font-src 'self' data:;
   connect-src 'self' https://api.dictionaryapi.dev;
-  manifest-src 'self';
+  worker-src 'self' blob:;
+  frame-src 'none';
+  child-src 'none';
   base-uri 'none';
   form-action 'none';
-  frame-ancestors 'none';
+  manifest-src 'self';
 ">
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dyslexia-Friendly Reader (Bookmark Fix + Holistic Speech)</title>
+
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="reader.css">
-  <script src="vendor/epub/epub.min.js" defer></script>
+
+  <!-- JSZip must load before epub.js -->
+  <script src="vendor/jszip/jszip.min.js" defer></script>
   <script src="reader.js" defer></script>
-  
+
   <link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192x192.png">
   <link rel="apple-touch-icon" sizes="256x256" href="./icons/icon-256x256.png">
   <link rel="apple-touch-icon" sizes="384x384" href="./icons/icon-384x384.png">
   <link rel="apple-touch-icon" sizes="512x512" href="./icons/icon-512x512.png">
-
-
 </head>
 <body>
   <div id="controls">
@@ -41,7 +45,10 @@
     <label>Line Spacing: <input type="range" id="lineSpacing" min="1" max="2.5" step="0.1" value="1.6"></label>
     <label>Text Color: <input type="color" id="textColor" value="#000000"></label>
     <label>Background: <input type="color" id="bgColor" value="#f8f8f8"></label>
-    <label>Upload: <input type="file" id="fileInput" accept=".txt"></label>
+
+    <!-- Accept EPUBs now -->
+    <label>Upload: <input type="file" id="fileInput" accept=".txt,.epub,application/epub+zip"></label>
+
     <label><input type="checkbox" id="autoformatToggle" checked> Autoformat readability</label>
     <label><input type="checkbox" id="clickReadToggle"> Click-to-Read Mode</label>
     <label>Reading Speed: <input type="range" id="speedControl" min="0.5" max="2.5" step="0.1" value="1"></label>
@@ -56,23 +63,10 @@
     <label>Chapter: <select id="chapterSelect"><option value="">--Select--</option></select></label>
     <button id="bookmarkBtn">Bookmark</button>
     <button id="gotoBookmarkBtn">Go to Bookmark</button>
-    
-
   </div>
 
   <div id="content" role="main" aria-live="polite">
-
     <h1>Dyslexia-Friendly Reader</h1>
-<section id="epubPanel" hidden aria-label="EPUB Reader">
-  <div class="epub-controls">
-    <button id="epubPrevBtn" aria-label="Previous page">Prev</button>
-    <button id="epubNextBtn" aria-label="Next page">Next</button>
-    <label>EPUB Font Size: <input type="range" id="epubFontSize" min="80" max="180" step="10" value="100"></label>
-    <button id="epubSpeakBtn">Speak current page</button>
-    <button id="epubCloseBtn">Close EPUB</button>
-  </div>
-  <div id="epub-viewer" style="width:100%;height:70vh;border:1px solid #ddd;border-radius:10px;background:#fff;"></div>
-</section>
     <h2>Installation Instructions and Feature Explanations</h2>
     <div id="story">
       Desktop App Install: In Chrome browser window double click Install button. 
@@ -92,9 +86,8 @@
     </div>
     <div id="definitionPopup" role="status" aria-live="polite"></div>
   </div>
-<button id="quickControlsBtn" class="fab" type="button" hidden aria-label="Show controls">Aa</button>
 
+  <button id="quickControlsBtn" class="fab" type="button" hidden aria-label="Show controls">Aa</button>
   <footer>Powered by Howard Forge Press</footer>
-<button id="quickControlsBtn" class="fab" type="button" hidden aria-label="Show controls">Aa</button>
 </body>
 </html>
