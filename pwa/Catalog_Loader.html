@@ -101,7 +101,9 @@
 
   <script>
     // --- Configuration (kept consistent with your existing Reader setup) ---
-    const CATALOG_URL = './catalog.json'; // relative to this file
+    // bump this when you publish a new catalog
+    const CATALOG_VERSION = '20250914';
+    const CATALOG_URL = `./catalog.json?v=${CATALOG_VERSION}`;
     const READER_URL  = './index.html';   // your Reader entry point
     const STORAGE_KEY = 'reader:import';
     const CHANNEL     = 'reader';
