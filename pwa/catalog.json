@@ -2,8 +2,239 @@
   "version": 1,
   "updated": "2025-08-11",
   "books": [
-   
 
+
+
+{
+      "id": "RLE61262",
+      "title": "Poirot Investigates",
+      "author": "Christie, Agatha",
+      "download": "./books/RLE61262.txt",
+      "dialogue %": 21.1,
+      "lexical diversity": 0.27,
+      "df_score": 54.1,
+      "fk_grade": 7.3,
+      "genres": [
+        "Detective & Mystery","Red Letter Enabled"
+      ]
+    },
+
+{
+      "id": "PG66446",
+      "title": "The Plymouth Express",
+      "author": "Christie, Agatha",
+      "download": "./books/pg66446.txt",
+      "dialogue %": 22.9,
+      "lexical diversity": 0.25,
+      "df_score": 55.9,
+      "fk_grade": 6.4,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+
+{
+      "id": "PG65238",
+      "title": "The Secret of Chimney's",
+      "author": "Christie, Agatha",
+      "download": "./books/pg65238.txt",
+      "dialogue %": 15.4,
+      "lexical diversity": 0.33,
+      "df_score": 55.8,
+      "fk_grade": 6.9,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+
+{
+      "id": "PG72824",
+      "title": "The Mystery of the Blue Train",
+      "author": "Christie, Agatha",
+      "download": "./books/pg72824.txt",
+      "dialogue %": 13.5,
+      "lexical diversity": 0.33,
+      "df_score": 55.3,
+      "fk_grade": 6.9,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+
+{
+      "id": "PG1155",
+      "title": "The Secret Adversary",
+      "author": "Christie, Agatha",
+      "download": "./books/pg1155.txt",
+      "dialogue %": 17.0,
+      "lexical diversity": 0.32,
+      "df_score": 57.6,
+      "fk_grade": 6.2,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+
+{
+      "id": "PG69087",
+      "title": "The Murder of Roger Ackroyd",
+      "author": "Christie, Agatha",
+      "download": "./books/pg69087.txt",
+      "dialogue %": 17.6,
+      "lexical diversity": 0.31,
+      "df_score": 56.4,
+      "fk_grade": 6.5,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+
+{
+      "id": "PG70114",
+      "title": "The Big Four",
+      "author": "Christie, Agatha",
+      "download": "./books/pg70114.txt",
+      "dialogue %": 19.0,
+      "lexical diversity": 0.31,
+      "df_score": 54.8,
+      "fk_grade": 6.9,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+{
+      "id": "PG61168",
+      "title": "The Man in the Brown Suit",
+      "author": "Christie, Agatha",
+      "download": "./books/pg61168.txt",
+      "dialogue %": 17.9,
+      "lexical diversity": 0.34,
+      "df_score": 55.9,
+      "fk_grade": 6.6,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+
+
+{
+      "id": "PG67160",
+      "title": "The Hunter's Lodge Case",
+      "author": "Christie, Agatha",
+      "download": "./books/pg67160.txt",
+      "dialogue %": 27.9,
+      "lexical diversity": 0.25,
+      "df_score": 52.8,
+      "fk_grade": 7.3,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+{
+      "id": "PG58866",
+      "title": "The Murder on the Links",
+      "author": "Christie, Agatha",
+      "download": "./books/RLE58866.txt",
+      "dialogue %": 19.7,
+      "lexical diversity": 0.33,
+      "df_score": 55.5,
+      "fk_grade": 6.9,
+      "genres": [
+        "Detective & Mystery","Red Letter Enabled"
+      ]
+    },
+{
+      "id": "PG75288",
+      "title": "The Seven Dials",
+      "author": "Christie, Agatha",
+      "download": "./books/pg75288.txt",
+      "dialogue %": 13.4,
+      "lexical diversity": 0.33,
+      "df_score": 57.4,
+      "fk_grade": 6.3,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+{
+      "id": "PG7173",
+      "title": "The Missing Will",
+      "author": "Christie, Agatha",
+      "download": "./books/pg7173.txt",
+      "dialogue %": 25.7,
+      "lexical diversity": 0.31,
+      "df_score": 52.9,
+      "fk_grade": 7.6,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+{
+      "id": "PG69700",
+      "title": "The Case-Book of Sherlock Holmes",
+      "author": "Doyle, Arthur Conan",
+      "download": "./books/pg69700.txt",
+      "dialogue %": 20.5,
+      "lexical diversity": 0.23,
+      "df_score": 52.5,
+      "fk_grade": 7.3,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+{
+      "id": "RLE1661",
+      "title": "The Adventures of Sherlock Holmes",
+      "author": "Doyle, Arthur Conan",
+      "download": "./books/RLE1661.txt",
+      "dialogue %": 37.1,
+      "lexical diversity": 0.21,
+      "df_score": 46.6,
+      "fk_grade": 8.7,
+      "genres": [
+        "Detective & Mystery","Red Letter Enabled"
+      ]
+    },
+{
+      "id": "PG2350",
+      "title": "His Last Bow: An Epilogue of Sherlock Holmes",
+      "author": "Doyle, Arthur Conan",
+      "download": "./books/pg2350.txt",
+      "dialogue %": 31.9,
+      "lexical diversity": 0.24,
+      "df_score": 51.6,
+      "fk_grade": 7.6,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
+
+ {
+      "id": "RLE244",
+      "title": "A Study in Scarlet",
+      "author": "Doyle, Arthur Conan",
+      "download": "./books/RLE244.txt",
+      "dialogue %": 29.1,
+      "lexical diversity": 0.36,
+      "df_score": 47.7,
+      "fk_grade": 8.9,
+      "genres": [
+        "Detective & Mystery","Red Letter Enabled"
+      ]
+    },  
+{
+      "id": "PG3289",
+      "title": "The Valley of Fear",
+      "author": "Doyle, Arthur Conan",
+      "download": "./books/pg3289.txt",
+      "dialogue %": 23.2,
+      "lexical diversity": 0.26,
+      "df_score": 50.0,
+      "fk_grade": 7.7,
+      "genres": [
+        "Detective & Mystery"
+      ]
+    },
   {
       "id": "PG74",
       "title": "The Adventures of Tom Sawyer",
@@ -32,16 +263,16 @@
       ]
     },
     {
-      "id": "PG863",
+      "id": "RLE863",
       "title": "The Mysterious Affair at Styles",
       "author": "Christie, Agatha",
-      "download": "./books/pg863.txt",
+      "download": "./books/RLE863.txt",
       "dialogue %": 58.0,
       "lexical diversity": 0.26,
       "df_score": 54.03,
       "fk_grade": 7.3,
       "genres": [
-        "Detective & Mystery"
+        "Detective & Mystery","Red Letter Enabled"
       ]
     },
 
@@ -265,16 +496,16 @@
       ]
     },
     {
-      "id": "PG108",
+      "id": "RLE108",
       "title": "The Return of Sherlock Holmes",
       "author": "Doyle, Arthur Conan",
-      "download": "./books/pg108.txt",
+      "download": "./books/RLE108.txt",
       "dialogue %": 67.7,
       "lexical diversity": 0.21,
       "df_score": 49.0,
       "fk_grade": 8.2,
       "genres": [
-        "Detective & Mystery"
+        "Detective & Mystery","Red Letter Enabled"
       ]
     },
     {
@@ -603,16 +834,16 @@
       ]
     },
     {
-      "id": "PG2852",
+      "id": "RLE2852",
       "title": "The Hound of the Baskervilles",
       "author": "Doyle, Arthur Conan",
-      "download": "./books/pg2852.txt",
+      "download": "./books/RLE2852.txt",
       "dialogue %": 45.5,
       "lexical diversity": 0.28,
       "df_score": 47.4,
       "fk_grade": 8.9,
       "genres": [
-        "Detective & Mystery"
+        "Detective & Mystery", "Red Letter Enabled"
       ]
     },
     {
@@ -930,16 +1161,16 @@
       ]
     },
     {
-      "id": "PG2097",
+      "id": "RLE2097",
       "title": "The Sign of the Four",
       "author": "Doyle, Arthur Conan",
-      "download": "./books/pg2097.txt",
+      "download": "./books/RLE2097.txt",
       "dialogue %": 55.3,
       "lexical diversity": 0.31,
       "df_score": 50.5,
       "fk_grade": 7.8,
       "genres": [
-        "Detective & Mystery"
+        "Detective & Mystery","Red Letter Enabled"
       ]
     }
   ]

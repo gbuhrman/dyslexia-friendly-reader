@@ -25,7 +25,9 @@
 
   <!-- JSZip must load before epub.js -->
   <script src="vendor/jszip/jszip.min.js" defer></script>
-  <script src="reader.js" defer></script>
+  <script src="reader_v24.js" defer></script>
+  <!--<script src="patch.js" defer></script>
+      <script src="patch_02.js" defer></script> -->
 
   <link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192x192.png">
   <link rel="apple-touch-icon" sizes="256x256" href="./icons/icon-256x256.png">
@@ -63,6 +65,8 @@
     <label>Chapter: <select id="chapterSelect"><option value="">--Select--</option></select></label>
     <button id="bookmarkBtn">Bookmark</button>
     <button id="gotoBookmarkBtn">Go to Bookmark</button>
+    <button id="toggle-mc" type="button" aria-pressed="false" title="Red Letter MC">Red Letter MC </button>
+
   </div>
 
   <div id="content" role="main" aria-live="polite">
