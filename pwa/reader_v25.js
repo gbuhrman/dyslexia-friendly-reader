@@ -190,8 +190,10 @@
     while (walker.nextNode()) {
       const t = walker.currentNode;
       if (!t.nodeValue || !t.nodeValue.trim()) continue;
-      // Skip inside mc-red to avoid extra churn
-      if (t.parentElement && t.parentElement.classList.contains('mc-red')) continue;
+      // In hardened v25, wrap words everywhere, even inside mc-red. This keeps
+      // the global words array aligned with the token list so that click-to-read
+      // starts reading at the correct index. Colour inheritance ensures
+      // wrapped words inside .mc-red still appear red.
       toWrap.push(t);
     }
     toWrap.forEach(t => {
@@ -209,6 +211,7 @@
       });
       t.parentNode.replaceChild(frag, t);
     });
+    // Recompute the words array to include all span.word elements in DOM order.
     words = Array.from(storyEl.querySelectorAll('span.word'));
   }
 
