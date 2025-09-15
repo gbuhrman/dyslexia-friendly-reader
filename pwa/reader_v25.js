@@ -242,7 +242,9 @@
    */
   function enforceMcColor(rootEl) {
     if (!rootEl) return;
-    const nodes = rootEl.querySelectorAll('span.mc-red');
+    // Apply colour to both the mc-red container and any descendant word spans. Safari/iOS
+    // does not inherit -webkit-text-fill-color to children, so set it on each.
+    const nodes = rootEl.querySelectorAll('span.mc-red, span.mc-red span.word');
     nodes.forEach(n => {
       n.style.color = 'darkred';
       n.style.webkitTextFillColor = 'darkred';
@@ -341,36 +343,26 @@
     if (!name) return null;
     return voices.find(v => v.name === name) || null;
   }
-  // Modified speakFrom() to use the global `words` array rather than splitting
-  // storyEl.innerText. Using `words` ensures that click-to-read indices line up
-  // exactly with the spoken tokens, preventing misalignment when the text
-  // contains Red Letter markup or other inline spans. This implementation
-  // mirrors the stable v22 reader logic.
   function speakFrom(startIndex = 0) {
-    if (!('speechSynthesis' in window)) return;
-    if (!words.length) return;
+    if (!("speechSynthesis" in window)) return;
+    const tokens = getAllTokens();
+    if (!tokens.length) return;
 
     const CHUNK = 40;
-    let pos = Math.max(0, Math.min(words.length - 1, startIndex || 0));
+    let pos = Math.max(0, Math.min(tokens.length - 1, startIndex || 0));
     const v = getSelectedVoice();
 
     try { speechSynthesis.cancel(); } catch {}
 
     function next() {
-      if (pos >= words.length) return;
-      const end = Math.min(words.length, pos + CHUNK);
-      const text = words.slice(pos, end).map(w => w.textContent).join(' ');
+      if (pos >= tokens.length) return;
+      const end = Math.min(tokens.length, pos + CHUNK);
+      const text = tokens.slice(pos, end).join(" ");
       const u = new SpeechSynthesisUtterance(text);
       if (v) u.voice = v;
-      const rate = parseFloat((speedControl && speedControl.value) || '1');
+      const rate = parseFloat((speedControl && speedControl.value) || "1");
       u.rate = (rate > 0 ? rate : 1);
-      u.onend = () => {
-        pos = end;
-        try {
-          localStorage.setItem('df_reader_bookmark', JSON.stringify({ tok: pos, scroll: window.scrollY || 0 }));
-        } catch {}
-        setTimeout(next, 20);
-      };
+      u.onend = () => { pos = end; try { localStorage.setItem('df_reader_bookmark', JSON.stringify({ tok: pos, scroll: window.scrollY || 0 })); } catch {} setTimeout(next, 20); };
       try { speechSynthesis.speak(u); } catch {}
     }
     setTimeout(next, 50);
