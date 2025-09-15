@@ -338,3 +338,15 @@ body.hide-controls #controls {
   transition: transform .25s ease;
 }
 
+/* Highlight main character (Red Letter MC) */
+.mc-red {
+  color: #b00000;      /* deep red */
+  -webkit-text-fill-color: darkred !important; /* Safari/iOS */
+  -webkit-text-stroke: 0px transparent;        /* avoids stroke override */
+  font-weight: 600;    /* optional: bold it a bit */
+}
+
+/* Optional accessibility tweak: if you ever want an alternate style */
+.mc-red[data-alt-style="true"] {
+  text-decoration: underline;
+}
